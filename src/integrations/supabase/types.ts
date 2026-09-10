@@ -367,6 +367,57 @@ export type Database = {
         }
         Relationships: []
       }
+      offices: {
+        Row: {
+          address: string
+          candidate_name: string
+          category: string
+          city: string
+          created_at: string
+          created_by: string | null
+          description: string
+          id: string
+          is_active: boolean
+          latitude: number
+          longitude: number
+          name: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string
+          candidate_name?: string
+          category?: string
+          city?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id?: string
+          is_active?: boolean
+          latitude: number
+          longitude: number
+          name: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          candidate_name?: string
+          category?: string
+          city?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id?: string
+          is_active?: boolean
+          latitude?: number
+          longitude?: number
+          name?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       poll_options: {
         Row: {
           id: string
