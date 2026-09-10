@@ -27,7 +27,11 @@ function MorePage() {
   const { isStaff } = useRoles();
 
   return (
-    <AppShell title="More sections" subtitle="Consultations, integrity and leadership education.">
+    <AppShell
+      title="More sections"
+      subtitle="Consultations, offices and candidates, and leadership education."
+    >
+
       <ul className="space-y-3">
         {MORE_LINKS.map((link) => (
           <li key={link.to}>
