@@ -7,7 +7,7 @@ import {
   GraduationCap,
   MessagesSquare,
   Newspaper,
-  ShieldCheck,
+  MapPin,
   Megaphone,
 } from "lucide-react";
 
@@ -42,7 +42,7 @@ const QUICK_LINKS = [
   { to: "/events", label: "Events", sub: "Meetings & activities", icon: CalendarDays },
   { to: "/council", label: "مجلس اعضاء الحزب", sub: "Discussions", icon: MessagesSquare },
   { to: "/polls", label: "Polls", sub: "Consultations", icon: BarChart3 },
-  { to: "/transparency", label: "النزاهة والشفافية", sub: "Integrity", icon: ShieldCheck },
+  { to: "/offices", label: "مكاتب التجمع والمرشحين", sub: "Offices & candidates", icon: MapPin },
   { to: "/academy", label: "أكاديمية القيادة", sub: "Leadership academy", icon: GraduationCap },
 ] as const;
 

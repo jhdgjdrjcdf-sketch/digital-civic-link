@@ -10,11 +10,51 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AcademyRouteImport } from './routes/academy'
+import { Route as AccountRouteImport } from './routes/account'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CouncilRouteImport } from './routes/council'
+import { Route as EventsRouteImport } from './routes/events'
 import { Route as MoreRouteImport } from './routes/more'
+import { Route as NewsRouteImport } from './routes/news'
+import { Route as OfficesRouteImport } from './routes/offices'
+import { Route as PollsRouteImport } from './routes/polls'
+import { Route as NewsNewsIdRouteImport } from './routes/news.$newsId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AcademyRoute = AcademyRouteImport.update({
+  id: '/academy',
+  path: '/academy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CouncilRoute = CouncilRouteImport.update({
+  id: '/council',
+  path: '/council',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MoreRoute = MoreRouteImport.update({
@@ -22,31 +62,127 @@ const MoreRoute = MoreRouteImport.update({
   path: '/more',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NewsRoute = NewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OfficesRoute = OfficesRouteImport.update({
+  id: '/offices',
+  path: '/offices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PollsRoute = PollsRouteImport.update({
+  id: '/polls',
+  path: '/polls',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsNewsIdRoute = NewsNewsIdRouteImport.update({
+  id: '/$newsId',
+  path: '/$newsId',
+  getParentRoute: () => NewsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/academy': typeof AcademyRoute
+  '/account': typeof AccountRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
+  '/council': typeof CouncilRoute
+  '/events': typeof EventsRoute
   '/more': typeof MoreRoute
+  '/news': typeof NewsRouteWithChildren
+  '/offices': typeof OfficesRoute
+  '/polls': typeof PollsRoute
+  '/news/$newsId': typeof NewsNewsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/academy': typeof AcademyRoute
+  '/account': typeof AccountRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
+  '/council': typeof CouncilRoute
+  '/events': typeof EventsRoute
   '/more': typeof MoreRoute
+  '/news': typeof NewsRouteWithChildren
+  '/offices': typeof OfficesRoute
+  '/polls': typeof PollsRoute
+  '/news/$newsId': typeof NewsNewsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/academy': typeof AcademyRoute
+  '/account': typeof AccountRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
+  '/council': typeof CouncilRoute
+  '/events': typeof EventsRoute
   '/more': typeof MoreRoute
+  '/news': typeof NewsRouteWithChildren
+  '/offices': typeof OfficesRoute
+  '/polls': typeof PollsRoute
+  '/news/$newsId': typeof NewsNewsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/more'
+  fullPaths:
+    | '/'
+    | '/academy'
+    | '/account'
+    | '/admin'
+    | '/auth'
+    | '/council'
+    | '/events'
+    | '/more'
+    | '/news'
+    | '/offices'
+    | '/polls'
+    | '/news/$newsId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/more'
-  id: '__root__' | '/' | '/more'
+  to:
+    | '/'
+    | '/academy'
+    | '/account'
+    | '/admin'
+    | '/auth'
+    | '/council'
+    | '/events'
+    | '/more'
+    | '/news'
+    | '/offices'
+    | '/polls'
+    | '/news/$newsId'
+  id:
+    | '__root__'
+    | '/'
+    | '/academy'
+    | '/account'
+    | '/admin'
+    | '/auth'
+    | '/council'
+    | '/events'
+    | '/more'
+    | '/news'
+    | '/offices'
+    | '/polls'
+    | '/news/$newsId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AcademyRoute: typeof AcademyRoute
+  AccountRoute: typeof AccountRoute
+  AdminRoute: typeof AdminRoute
+  AuthRoute: typeof AuthRoute
+  CouncilRoute: typeof CouncilRoute
+  EventsRoute: typeof EventsRoute
   MoreRoute: typeof MoreRoute
+  NewsRoute: typeof NewsRouteWithChildren
+  OfficesRoute: typeof OfficesRoute
+  PollsRoute: typeof PollsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,6 +194,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/academy': {
+      id: '/academy'
+      path: '/academy'
+      fullPath: '/academy'
+      preLoaderRoute: typeof AcademyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/council': {
+      id: '/council'
+      path: '/council'
+      fullPath: '/council'
+      preLoaderRoute: typeof CouncilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/more': {
       id: '/more'
       path: '/more'
@@ -65,12 +243,59 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MoreRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/news': {
+      id: '/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/offices': {
+      id: '/offices'
+      path: '/offices'
+      fullPath: '/offices'
+      preLoaderRoute: typeof OfficesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/polls': {
+      id: '/polls'
+      path: '/polls'
+      fullPath: '/polls'
+      preLoaderRoute: typeof PollsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news/$newsId': {
+      id: '/news/$newsId'
+      path: '/$newsId'
+      fullPath: '/news/$newsId'
+      preLoaderRoute: typeof NewsNewsIdRouteImport
+      parentRoute: typeof NewsRoute
+    }
   }
 }
 
+interface NewsRouteChildren {
+  NewsNewsIdRoute: typeof NewsNewsIdRoute
+}
+
+const NewsRouteChildren: NewsRouteChildren = {
+  NewsNewsIdRoute: NewsNewsIdRoute,
+}
+
+const NewsRouteWithChildren = NewsRoute._addFileChildren(NewsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AcademyRoute: AcademyRoute,
+  AccountRoute: AccountRoute,
+  AdminRoute: AdminRoute,
+  AuthRoute: AuthRoute,
+  CouncilRoute: CouncilRoute,
+  EventsRoute: EventsRoute,
   MoreRoute: MoreRoute,
+  NewsRoute: NewsRouteWithChildren,
+  OfficesRoute: OfficesRoute,
+  PollsRoute: PollsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

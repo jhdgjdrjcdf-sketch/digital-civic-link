@@ -10,12 +10,12 @@ export const Route = createFileRoute("/more")({
       { title: "More sections — تجمع الفاو زاخو" },
       {
         name: "description",
-        content: "Polls, transparency reports and the leadership academy of تجمع الفاو زاخو.",
+        content: "Polls, offices and candidates map, and the leadership academy of تجمع الفاو زاخو.",
       },
       { property: "og:title", content: "More sections — تجمع الفاو زاخو" },
       {
         property: "og:description",
-        content: "Polls, transparency reports and leadership courses.",
+        content: "Polls, offices and candidates, and leadership courses.",
       },
     ],
   }),
@@ -27,7 +27,11 @@ function MorePage() {
   const { isStaff } = useRoles();
 
   return (
-    <AppShell title="More sections" subtitle="Consultations, integrity and leadership education.">
+    <AppShell
+      title="More sections"
+      subtitle="Consultations, offices and candidates, and leadership education."
+    >
+
       <ul className="space-y-3">
         {MORE_LINKS.map((link) => (
           <li key={link.to}>
