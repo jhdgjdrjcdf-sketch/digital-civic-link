@@ -10,12 +10,12 @@ export const Route = createFileRoute("/more")({
       { title: "More sections — تجمع الفاو زاخو" },
       {
         name: "description",
-        content: "Polls, transparency reports and the leadership academy of تجمع الفاو زاخو.",
+        content: "Polls, offices and candidates map, and the leadership academy of تجمع الفاو زاخو.",
       },
       { property: "og:title", content: "More sections — تجمع الفاو زاخو" },
       {
         property: "og:description",
-        content: "Polls, transparency reports and leadership courses.",
+        content: "Polls, offices and candidates, and leadership courses.",
       },
     ],
   }),

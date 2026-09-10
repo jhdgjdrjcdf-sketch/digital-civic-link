@@ -5,7 +5,7 @@ import {
   CalendarDays,
   MessagesSquare,
   BarChart3,
-  ShieldCheck,
+  MapPin,
   GraduationCap,
   UserRound,
   LogIn,
@@ -28,10 +28,10 @@ const TABS = [
 export const MORE_LINKS = [
   { to: "/polls", title: "Polls", desc: "Take part in open consultations", icon: BarChart3 },
   {
-    to: "/transparency",
-    title: "النزاهة والشفافية",
-    desc: "Integrity, funding and public reports",
-    icon: ShieldCheck,
+    to: "/offices",
+    title: "مكاتب التجمع والمرشحين",
+    desc: "Find the nearest office on the map",
+    icon: MapPin,
   },
   {
     to: "/academy",
