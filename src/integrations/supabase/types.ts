@@ -377,6 +377,7 @@ export type Database = {
           created_by: string | null
           description: string
           id: string
+          image_url: string | null
           is_active: boolean
           latitude: number
           longitude: number
@@ -393,6 +394,7 @@ export type Database = {
           created_by?: string | null
           description?: string
           id?: string
+          image_url?: string | null
           is_active?: boolean
           latitude: number
           longitude: number
@@ -409,6 +411,7 @@ export type Database = {
           created_by?: string | null
           description?: string
           id?: string
+          image_url?: string | null
           is_active?: boolean
           latitude?: number
           longitude?: number

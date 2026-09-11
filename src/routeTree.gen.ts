@@ -20,6 +20,7 @@ import { Route as MoreRouteImport } from './routes/more'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as OfficesRouteImport } from './routes/offices'
 import { Route as PollsRouteImport } from './routes/polls'
+import { Route as EventsEventIdRouteImport } from './routes/events.$eventId'
 import { Route as NewsNewsIdRouteImport } from './routes/news.$newsId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -77,6 +78,11 @@ const PollsRoute = PollsRouteImport.update({
   path: '/polls',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EventsEventIdRoute = EventsEventIdRouteImport.update({
+  id: '/$eventId',
+  path: '/$eventId',
+  getParentRoute: () => EventsRoute,
+} as any)
 const NewsNewsIdRoute = NewsNewsIdRouteImport.update({
   id: '/$newsId',
   path: '/$newsId',
@@ -90,11 +96,12 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/council': typeof CouncilRoute
-  '/events': typeof EventsRoute
+  '/events': typeof EventsRouteWithChildren
   '/more': typeof MoreRoute
   '/news': typeof NewsRouteWithChildren
   '/offices': typeof OfficesRoute
   '/polls': typeof PollsRoute
+  '/events/$eventId': typeof EventsEventIdRoute
   '/news/$newsId': typeof NewsNewsIdRoute
 }
 export interface FileRoutesByTo {
@@ -104,11 +111,12 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/council': typeof CouncilRoute
-  '/events': typeof EventsRoute
+  '/events': typeof EventsRouteWithChildren
   '/more': typeof MoreRoute
   '/news': typeof NewsRouteWithChildren
   '/offices': typeof OfficesRoute
   '/polls': typeof PollsRoute
+  '/events/$eventId': typeof EventsEventIdRoute
   '/news/$newsId': typeof NewsNewsIdRoute
 }
 export interface FileRoutesById {
@@ -119,11 +127,12 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/council': typeof CouncilRoute
-  '/events': typeof EventsRoute
+  '/events': typeof EventsRouteWithChildren
   '/more': typeof MoreRoute
   '/news': typeof NewsRouteWithChildren
   '/offices': typeof OfficesRoute
   '/polls': typeof PollsRoute
+  '/events/$eventId': typeof EventsEventIdRoute
   '/news/$newsId': typeof NewsNewsIdRoute
 }
 export interface FileRouteTypes {
@@ -140,6 +149,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/offices'
     | '/polls'
+    | '/events/$eventId'
     | '/news/$newsId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/offices'
     | '/polls'
+    | '/events/$eventId'
     | '/news/$newsId'
   id:
     | '__root__'
@@ -168,6 +179,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/offices'
     | '/polls'
+    | '/events/$eventId'
     | '/news/$newsId'
   fileRoutesById: FileRoutesById
 }
@@ -178,7 +190,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
   CouncilRoute: typeof CouncilRoute
-  EventsRoute: typeof EventsRoute
+  EventsRoute: typeof EventsRouteWithChildren
   MoreRoute: typeof MoreRoute
   NewsRoute: typeof NewsRouteWithChildren
   OfficesRoute: typeof OfficesRoute
@@ -264,6 +276,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PollsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/events/$eventId': {
+      id: '/events/$eventId'
+      path: '/$eventId'
+      fullPath: '/events/$eventId'
+      preLoaderRoute: typeof EventsEventIdRouteImport
+      parentRoute: typeof EventsRoute
+    }
     '/news/$newsId': {
       id: '/news/$newsId'
       path: '/$newsId'
@@ -273,6 +292,17 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface EventsRouteChildren {
+  EventsEventIdRoute: typeof EventsEventIdRoute
+}
+
+const EventsRouteChildren: EventsRouteChildren = {
+  EventsEventIdRoute: EventsEventIdRoute,
+}
+
+const EventsRouteWithChildren =
+  EventsRoute._addFileChildren(EventsRouteChildren)
 
 interface NewsRouteChildren {
   NewsNewsIdRoute: typeof NewsNewsIdRoute
@@ -291,7 +321,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
   CouncilRoute: CouncilRoute,
-  EventsRoute: EventsRoute,
+  EventsRoute: EventsRouteWithChildren,
   MoreRoute: MoreRoute,
   NewsRoute: NewsRouteWithChildren,
   OfficesRoute: OfficesRoute,
