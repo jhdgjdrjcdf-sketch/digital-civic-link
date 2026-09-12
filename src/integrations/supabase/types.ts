@@ -41,51 +41,6 @@ export type Database = {
         }
         Relationships: []
       }
-      certificates: {
-        Row: {
-          course_id: string
-          id: string
-          issued_at: string
-          quiz_id: string
-          score: number
-          serial: string
-          user_id: string
-        }
-        Insert: {
-          course_id: string
-          id?: string
-          issued_at?: string
-          quiz_id: string
-          score: number
-          serial: string
-          user_id: string
-        }
-        Update: {
-          course_id?: string
-          id?: string
-          issued_at?: string
-          quiz_id?: string
-          score?: number
-          serial?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "certificates_course_id_fkey"
-            columns: ["course_id"]
-            isOneToOne: false
-            referencedRelation: "courses"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "certificates_quiz_id_fkey"
-            columns: ["quiz_id"]
-            isOneToOne: false
-            referencedRelation: "quizzes"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       content_reports: {
         Row: {
           created_at: string
@@ -594,143 +549,6 @@ export type Database = {
         }
         Relationships: []
       }
-      quiz_attempts: {
-        Row: {
-          created_at: string
-          id: string
-          passed: boolean
-          quiz_id: string
-          score: number
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          passed: boolean
-          quiz_id: string
-          score: number
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          passed?: boolean
-          quiz_id?: string
-          score?: number
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "quiz_attempts_quiz_id_fkey"
-            columns: ["quiz_id"]
-            isOneToOne: false
-            referencedRelation: "quizzes"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      quiz_choices: {
-        Row: {
-          id: string
-          is_correct: boolean
-          label: string
-          position: number
-          question_id: string
-        }
-        Insert: {
-          id?: string
-          is_correct?: boolean
-          label: string
-          position?: number
-          question_id: string
-        }
-        Update: {
-          id?: string
-          is_correct?: boolean
-          label?: string
-          position?: number
-          question_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "quiz_choices_question_id_fkey"
-            columns: ["question_id"]
-            isOneToOne: false
-            referencedRelation: "quiz_questions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      quiz_questions: {
-        Row: {
-          created_at: string
-          id: string
-          position: number
-          prompt: string
-          quiz_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          position?: number
-          prompt: string
-          quiz_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          position?: number
-          prompt?: string
-          quiz_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "quiz_questions_quiz_id_fkey"
-            columns: ["quiz_id"]
-            isOneToOne: false
-            referencedRelation: "quizzes"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      quizzes: {
-        Row: {
-          course_id: string
-          created_at: string
-          description: string
-          id: string
-          pass_percent: number
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          course_id: string
-          created_at?: string
-          description?: string
-          id?: string
-          pass_percent?: number
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          course_id?: string
-          created_at?: string
-          description?: string
-          id?: string
-          pass_percent?: number
-          title?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "quizzes_course_id_fkey"
-            columns: ["course_id"]
-            isOneToOne: false
-            referencedRelation: "courses"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       transparency_records: {
         Row: {
           category: string
@@ -831,7 +649,6 @@ export type Database = {
           supports: number
         }[]
       }
-      get_quiz: { Args: { _quiz_id: string }; Returns: Json }
       grant_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -877,7 +694,6 @@ export type Database = {
         }
         Returns: undefined
       }
-      submit_quiz: { Args: { _answers: Json; _quiz_id: string }; Returns: Json }
       write_audit: {
         Args: { _action: string; _entity: string; _entity_id: string }
         Returns: undefined
