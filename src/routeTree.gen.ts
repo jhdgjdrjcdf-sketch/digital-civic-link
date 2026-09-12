@@ -20,6 +20,7 @@ import { Route as MoreRouteImport } from './routes/more'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as OfficesRouteImport } from './routes/offices'
 import { Route as PollsRouteImport } from './routes/polls'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as EventsEventIdRouteImport } from './routes/events.$eventId'
 import { Route as NewsNewsIdRouteImport } from './routes/news.$newsId'
 
@@ -78,6 +79,11 @@ const PollsRoute = PollsRouteImport.update({
   path: '/polls',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EventsEventIdRoute = EventsEventIdRouteImport.update({
   id: '/$eventId',
   path: '/$eventId',
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/news': typeof NewsRouteWithChildren
   '/offices': typeof OfficesRoute
   '/polls': typeof PollsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/events/$eventId': typeof EventsEventIdRoute
   '/news/$newsId': typeof NewsNewsIdRoute
 }
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/news': typeof NewsRouteWithChildren
   '/offices': typeof OfficesRoute
   '/polls': typeof PollsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/events/$eventId': typeof EventsEventIdRoute
   '/news/$newsId': typeof NewsNewsIdRoute
 }
@@ -132,6 +140,7 @@ export interface FileRoutesById {
   '/news': typeof NewsRouteWithChildren
   '/offices': typeof OfficesRoute
   '/polls': typeof PollsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/events/$eventId': typeof EventsEventIdRoute
   '/news/$newsId': typeof NewsNewsIdRoute
 }
@@ -149,6 +158,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/offices'
     | '/polls'
+    | '/reset-password'
     | '/events/$eventId'
     | '/news/$newsId'
   fileRoutesByTo: FileRoutesByTo
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/offices'
     | '/polls'
+    | '/reset-password'
     | '/events/$eventId'
     | '/news/$newsId'
   id:
@@ -179,6 +190,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/offices'
     | '/polls'
+    | '/reset-password'
     | '/events/$eventId'
     | '/news/$newsId'
   fileRoutesById: FileRoutesById
@@ -195,6 +207,7 @@ export interface RootRouteChildren {
   NewsRoute: typeof NewsRouteWithChildren
   OfficesRoute: typeof OfficesRoute
   PollsRoute: typeof PollsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -276,6 +289,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PollsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/events/$eventId': {
       id: '/events/$eventId'
       path: '/$eventId'
@@ -326,6 +346,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewsRoute: NewsRouteWithChildren,
   OfficesRoute: OfficesRoute,
   PollsRoute: PollsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
