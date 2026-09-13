@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AcademyRouteImport } from './routes/academy'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -20,17 +19,14 @@ import { Route as MoreRouteImport } from './routes/more'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as OfficesRouteImport } from './routes/offices'
 import { Route as PollsRouteImport } from './routes/polls'
+import { Route as AcademyIndexRouteImport } from './routes/academy.index'
+import { Route as AcademyCourseIdRouteImport } from './routes/academy.$courseId'
 import { Route as EventsEventIdRouteImport } from './routes/events.$eventId'
 import { Route as NewsNewsIdRouteImport } from './routes/news.$newsId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AcademyRoute = AcademyRouteImport.update({
-  id: '/academy',
-  path: '/academy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccountRoute = AccountRouteImport.update({
@@ -78,6 +74,16 @@ const PollsRoute = PollsRouteImport.update({
   path: '/polls',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AcademyIndexRoute = AcademyIndexRouteImport.update({
+  id: '/academy/',
+  path: '/academy/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AcademyCourseIdRoute = AcademyCourseIdRouteImport.update({
+  id: '/academy/$courseId',
+  path: '/academy/$courseId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EventsEventIdRoute = EventsEventIdRouteImport.update({
   id: '/$eventId',
   path: '/$eventId',
@@ -91,7 +97,6 @@ const NewsNewsIdRoute = NewsNewsIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/academy': typeof AcademyRoute
   '/account': typeof AccountRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
@@ -101,12 +106,13 @@ export interface FileRoutesByFullPath {
   '/news': typeof NewsRouteWithChildren
   '/offices': typeof OfficesRoute
   '/polls': typeof PollsRoute
+  '/academy/$courseId': typeof AcademyCourseIdRoute
   '/events/$eventId': typeof EventsEventIdRoute
   '/news/$newsId': typeof NewsNewsIdRoute
+  '/academy/': typeof AcademyIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/academy': typeof AcademyRoute
   '/account': typeof AccountRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
@@ -116,13 +122,14 @@ export interface FileRoutesByTo {
   '/news': typeof NewsRouteWithChildren
   '/offices': typeof OfficesRoute
   '/polls': typeof PollsRoute
+  '/academy/$courseId': typeof AcademyCourseIdRoute
   '/events/$eventId': typeof EventsEventIdRoute
   '/news/$newsId': typeof NewsNewsIdRoute
+  '/academy': typeof AcademyIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/academy': typeof AcademyRoute
   '/account': typeof AccountRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
@@ -132,14 +139,15 @@ export interface FileRoutesById {
   '/news': typeof NewsRouteWithChildren
   '/offices': typeof OfficesRoute
   '/polls': typeof PollsRoute
+  '/academy/$courseId': typeof AcademyCourseIdRoute
   '/events/$eventId': typeof EventsEventIdRoute
   '/news/$newsId': typeof NewsNewsIdRoute
+  '/academy/': typeof AcademyIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/academy'
     | '/account'
     | '/admin'
     | '/auth'
@@ -149,12 +157,13 @@ export interface FileRouteTypes {
     | '/news'
     | '/offices'
     | '/polls'
+    | '/academy/$courseId'
     | '/events/$eventId'
     | '/news/$newsId'
+    | '/academy/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/academy'
     | '/account'
     | '/admin'
     | '/auth'
@@ -164,12 +173,13 @@ export interface FileRouteTypes {
     | '/news'
     | '/offices'
     | '/polls'
+    | '/academy/$courseId'
     | '/events/$eventId'
     | '/news/$newsId'
+    | '/academy'
   id:
     | '__root__'
     | '/'
-    | '/academy'
     | '/account'
     | '/admin'
     | '/auth'
@@ -179,13 +189,14 @@ export interface FileRouteTypes {
     | '/news'
     | '/offices'
     | '/polls'
+    | '/academy/$courseId'
     | '/events/$eventId'
     | '/news/$newsId'
+    | '/academy/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AcademyRoute: typeof AcademyRoute
   AccountRoute: typeof AccountRoute
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
@@ -195,6 +206,8 @@ export interface RootRouteChildren {
   NewsRoute: typeof NewsRouteWithChildren
   OfficesRoute: typeof OfficesRoute
   PollsRoute: typeof PollsRoute
+  AcademyCourseIdRoute: typeof AcademyCourseIdRoute
+  AcademyIndexRoute: typeof AcademyIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -204,13 +217,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/academy': {
-      id: '/academy'
-      path: '/academy'
-      fullPath: '/academy'
-      preLoaderRoute: typeof AcademyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/account': {
@@ -276,6 +282,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PollsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/academy/': {
+      id: '/academy/'
+      path: '/academy'
+      fullPath: '/academy/'
+      preLoaderRoute: typeof AcademyIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/academy/$courseId': {
+      id: '/academy/$courseId'
+      path: '/academy/$courseId'
+      fullPath: '/academy/$courseId'
+      preLoaderRoute: typeof AcademyCourseIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/events/$eventId': {
       id: '/events/$eventId'
       path: '/$eventId'
@@ -316,7 +336,6 @@ const NewsRouteWithChildren = NewsRoute._addFileChildren(NewsRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AcademyRoute: AcademyRoute,
   AccountRoute: AccountRoute,
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
@@ -326,6 +345,8 @@ const rootRouteChildren: RootRouteChildren = {
   NewsRoute: NewsRouteWithChildren,
   OfficesRoute: OfficesRoute,
   PollsRoute: PollsRoute,
+  AcademyCourseIdRoute: AcademyCourseIdRoute,
+  AcademyIndexRoute: AcademyIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
