@@ -41,7 +41,7 @@ export function CourseCover({ path, title, className }: { path?: string | null; 
 
 export async function uploadAcademyFile(courseId: string, folder: "covers" | "lessons" | "assignments", file: File) {
   const ext = file.name.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "") || "bin";
-  const path = `${courseId}/${folder}/${crypto.randomUUID()}.${ext}`;
+  const path = `${folder}/${courseId}/${crypto.randomUUID()}.${ext}`;
   const { error } = await supabase.storage.from(ACADEMY_BUCKET).upload(path, file, { upsert: false });
   if (error) throw error;
   return path;
