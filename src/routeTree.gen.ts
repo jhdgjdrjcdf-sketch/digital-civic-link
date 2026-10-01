@@ -26,6 +26,7 @@ import { Route as AcademyVerifyRouteImport } from './routes/academy.verify'
 import { Route as EventsEventIdRouteImport } from './routes/events.$eventId'
 import { Route as NewsNewsIdRouteImport } from './routes/news.$newsId'
 import { Route as AcademyCertificateSerialRouteImport } from './routes/academy.certificate.$serial'
+import { Route as AcademyLearnCourseIdRouteImport } from './routes/academy.learn.$courseId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -113,6 +114,11 @@ const AcademyCertificateSerialRoute =
     path: '/academy/certificate/$serial',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AcademyLearnCourseIdRoute = AcademyLearnCourseIdRouteImport.update({
+  id: '/academy/learn/$courseId',
+  path: '/academy/learn/$courseId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -132,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/news/$newsId': typeof NewsNewsIdRoute
   '/academy/': typeof AcademyIndexRoute
   '/academy/certificate/$serial': typeof AcademyCertificateSerialRoute
+  '/academy/learn/$courseId': typeof AcademyLearnCourseIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -151,6 +158,7 @@ export interface FileRoutesByTo {
   '/news/$newsId': typeof NewsNewsIdRoute
   '/academy': typeof AcademyIndexRoute
   '/academy/certificate/$serial': typeof AcademyCertificateSerialRoute
+  '/academy/learn/$courseId': typeof AcademyLearnCourseIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -171,6 +179,7 @@ export interface FileRoutesById {
   '/news/$newsId': typeof NewsNewsIdRoute
   '/academy/': typeof AcademyIndexRoute
   '/academy/certificate/$serial': typeof AcademyCertificateSerialRoute
+  '/academy/learn/$courseId': typeof AcademyLearnCourseIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -192,6 +201,7 @@ export interface FileRouteTypes {
     | '/news/$newsId'
     | '/academy/'
     | '/academy/certificate/$serial'
+    | '/academy/learn/$courseId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -211,6 +221,7 @@ export interface FileRouteTypes {
     | '/news/$newsId'
     | '/academy'
     | '/academy/certificate/$serial'
+    | '/academy/learn/$courseId'
   id:
     | '__root__'
     | '/'
@@ -230,6 +241,7 @@ export interface FileRouteTypes {
     | '/news/$newsId'
     | '/academy/'
     | '/academy/certificate/$serial'
+    | '/academy/learn/$courseId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -248,6 +260,7 @@ export interface RootRouteChildren {
   AcademyVerifyRoute: typeof AcademyVerifyRoute
   AcademyIndexRoute: typeof AcademyIndexRoute
   AcademyCertificateSerialRoute: typeof AcademyCertificateSerialRoute
+  AcademyLearnCourseIdRoute: typeof AcademyLearnCourseIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -371,6 +384,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AcademyCertificateSerialRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/academy/learn/$courseId': {
+      id: '/academy/learn/$courseId'
+      path: '/academy/learn/$courseId'
+      fullPath: '/academy/learn/$courseId'
+      preLoaderRoute: typeof AcademyLearnCourseIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -411,6 +431,7 @@ const rootRouteChildren: RootRouteChildren = {
   AcademyVerifyRoute: AcademyVerifyRoute,
   AcademyIndexRoute: AcademyIndexRoute,
   AcademyCertificateSerialRoute: AcademyCertificateSerialRoute,
+  AcademyLearnCourseIdRoute: AcademyLearnCourseIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
