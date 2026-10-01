@@ -46,7 +46,7 @@ function AccountPage() {
     <AppShell title="Your account">
       <div className="space-y-6">
         <section className="card-soft space-y-2 p-4">
-          <p className="font-semibold">{(session.user.user_metadata?.display_name as string) || session.user.email}</p>
+          <p className="font-semibold">{(session.user.user_metadata?.["display_name"] as string) || session.user.email}</p>
           <p className="text-xs text-muted-foreground">{session.user.email}</p>
           <p className="text-xs text-muted-foreground">
             Roles: {roles.length ? roles.map((r) => ROLE_LABELS[r] ?? r).join(", ") : "Member"}

@@ -95,7 +95,7 @@ function MyCoursesPage() {
   );
 }
 
-function MyCourseCard({ course, serial }: { course: Course; serial?: string }) {
+function MyCourseCard({ course, serial }: { course: Course; serial?: string | undefined }) {
   const progress = useCourseProgress(course.id);
   const p = progress.data;
   return (
