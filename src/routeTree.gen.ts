@@ -21,8 +21,11 @@ import { Route as OfficesRouteImport } from './routes/offices'
 import { Route as PollsRouteImport } from './routes/polls'
 import { Route as AcademyIndexRouteImport } from './routes/academy.index'
 import { Route as AcademyCourseIdRouteImport } from './routes/academy.$courseId'
+import { Route as AcademyMyRouteImport } from './routes/academy.my'
+import { Route as AcademyVerifyRouteImport } from './routes/academy.verify'
 import { Route as EventsEventIdRouteImport } from './routes/events.$eventId'
 import { Route as NewsNewsIdRouteImport } from './routes/news.$newsId'
+import { Route as AcademyCertificateSerialRouteImport } from './routes/academy.certificate.$serial'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -84,6 +87,16 @@ const AcademyCourseIdRoute = AcademyCourseIdRouteImport.update({
   path: '/academy/$courseId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AcademyMyRoute = AcademyMyRouteImport.update({
+  id: '/academy/my',
+  path: '/academy/my',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AcademyVerifyRoute = AcademyVerifyRouteImport.update({
+  id: '/academy/verify',
+  path: '/academy/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EventsEventIdRoute = EventsEventIdRouteImport.update({
   id: '/$eventId',
   path: '/$eventId',
@@ -94,6 +107,12 @@ const NewsNewsIdRoute = NewsNewsIdRouteImport.update({
   path: '/$newsId',
   getParentRoute: () => NewsRoute,
 } as any)
+const AcademyCertificateSerialRoute =
+  AcademyCertificateSerialRouteImport.update({
+    id: '/academy/certificate/$serial',
+    path: '/academy/certificate/$serial',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -107,9 +126,12 @@ export interface FileRoutesByFullPath {
   '/offices': typeof OfficesRoute
   '/polls': typeof PollsRoute
   '/academy/$courseId': typeof AcademyCourseIdRoute
+  '/academy/my': typeof AcademyMyRoute
+  '/academy/verify': typeof AcademyVerifyRoute
   '/events/$eventId': typeof EventsEventIdRoute
   '/news/$newsId': typeof NewsNewsIdRoute
   '/academy/': typeof AcademyIndexRoute
+  '/academy/certificate/$serial': typeof AcademyCertificateSerialRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -123,9 +145,12 @@ export interface FileRoutesByTo {
   '/offices': typeof OfficesRoute
   '/polls': typeof PollsRoute
   '/academy/$courseId': typeof AcademyCourseIdRoute
+  '/academy/my': typeof AcademyMyRoute
+  '/academy/verify': typeof AcademyVerifyRoute
   '/events/$eventId': typeof EventsEventIdRoute
   '/news/$newsId': typeof NewsNewsIdRoute
   '/academy': typeof AcademyIndexRoute
+  '/academy/certificate/$serial': typeof AcademyCertificateSerialRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -140,9 +165,12 @@ export interface FileRoutesById {
   '/offices': typeof OfficesRoute
   '/polls': typeof PollsRoute
   '/academy/$courseId': typeof AcademyCourseIdRoute
+  '/academy/my': typeof AcademyMyRoute
+  '/academy/verify': typeof AcademyVerifyRoute
   '/events/$eventId': typeof EventsEventIdRoute
   '/news/$newsId': typeof NewsNewsIdRoute
   '/academy/': typeof AcademyIndexRoute
+  '/academy/certificate/$serial': typeof AcademyCertificateSerialRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -158,9 +186,12 @@ export interface FileRouteTypes {
     | '/offices'
     | '/polls'
     | '/academy/$courseId'
+    | '/academy/my'
+    | '/academy/verify'
     | '/events/$eventId'
     | '/news/$newsId'
     | '/academy/'
+    | '/academy/certificate/$serial'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -174,9 +205,12 @@ export interface FileRouteTypes {
     | '/offices'
     | '/polls'
     | '/academy/$courseId'
+    | '/academy/my'
+    | '/academy/verify'
     | '/events/$eventId'
     | '/news/$newsId'
     | '/academy'
+    | '/academy/certificate/$serial'
   id:
     | '__root__'
     | '/'
@@ -190,9 +224,12 @@ export interface FileRouteTypes {
     | '/offices'
     | '/polls'
     | '/academy/$courseId'
+    | '/academy/my'
+    | '/academy/verify'
     | '/events/$eventId'
     | '/news/$newsId'
     | '/academy/'
+    | '/academy/certificate/$serial'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -207,7 +244,10 @@ export interface RootRouteChildren {
   OfficesRoute: typeof OfficesRoute
   PollsRoute: typeof PollsRoute
   AcademyCourseIdRoute: typeof AcademyCourseIdRoute
+  AcademyMyRoute: typeof AcademyMyRoute
+  AcademyVerifyRoute: typeof AcademyVerifyRoute
   AcademyIndexRoute: typeof AcademyIndexRoute
+  AcademyCertificateSerialRoute: typeof AcademyCertificateSerialRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -296,6 +336,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AcademyCourseIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/academy/my': {
+      id: '/academy/my'
+      path: '/academy/my'
+      fullPath: '/academy/my'
+      preLoaderRoute: typeof AcademyMyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/academy/verify': {
+      id: '/academy/verify'
+      path: '/academy/verify'
+      fullPath: '/academy/verify'
+      preLoaderRoute: typeof AcademyVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/events/$eventId': {
       id: '/events/$eventId'
       path: '/$eventId'
@@ -309,6 +363,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/news/$newsId'
       preLoaderRoute: typeof NewsNewsIdRouteImport
       parentRoute: typeof NewsRoute
+    }
+    '/academy/certificate/$serial': {
+      id: '/academy/certificate/$serial'
+      path: '/academy/certificate/$serial'
+      fullPath: '/academy/certificate/$serial'
+      preLoaderRoute: typeof AcademyCertificateSerialRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -346,7 +407,10 @@ const rootRouteChildren: RootRouteChildren = {
   OfficesRoute: OfficesRoute,
   PollsRoute: PollsRoute,
   AcademyCourseIdRoute: AcademyCourseIdRoute,
+  AcademyMyRoute: AcademyMyRoute,
+  AcademyVerifyRoute: AcademyVerifyRoute,
   AcademyIndexRoute: AcademyIndexRoute,
+  AcademyCertificateSerialRoute: AcademyCertificateSerialRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
