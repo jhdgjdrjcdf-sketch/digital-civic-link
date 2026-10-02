@@ -12,7 +12,8 @@ export type AppRole =
   | "moderator"
   | "transparency_manager"
   | "academy_manager"
-  | "member";
+  | "member"
+  | "instructor";
 
 export const ROLE_LABELS: Record<AppRole, string> = {
   super_admin: "Super Administrator",
@@ -23,6 +24,7 @@ export const ROLE_LABELS: Record<AppRole, string> = {
   transparency_manager: "Transparency Manager",
   academy_manager: "Academy Manager",
   member: "Member",
+  instructor: "Instructor",
 };
 
 export function useSession() {
