@@ -69,7 +69,7 @@ const SECTIONS: Section[] = [
       { key: "status", label: "Status", type: "select", options: STATUS },
     ],
     defaults: { category: "news", status: "draft", source: "Party press office" },
-    beforeSave: (v) => ({ ...v, published_at: v.status === "published" ? (v.published_at ?? new Date().toISOString()) : v.published_at ?? null }),
+    beforeSave: (v) => ({ ...v, published_at: v['status'] === "published" ? (v['published_at'] ?? new Date().toISOString()) : v['published_at'] ?? null }),
   },
   {
     id: "events", label: "Events", table: "events", role: ["event_manager", "content_admin"],
@@ -160,7 +160,7 @@ function AdminPage() {
         <div className="space-y-4">
           <div className="flex gap-2 overflow-x-auto pb-1">
             {allowed.map((s) => (
-              <Button key={s.id} size="sm" variant={s.id === section.id ? "default" : "outline"} onClick={() => setActive(s.id)} className="shrink-0">
+          <div className="flex gap-2 overflow-x-auto pb-1">
                 {s.label}
               </Button>
             ))}
@@ -205,7 +205,7 @@ function SectionManager({ section }: { section: Section }) {
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold">{String(row[section.titleKey] ?? "")}</p>
                 {section.statusKey ? <Badge variant="secondary" className="mt-1">{String(row[section.statusKey])}</Badge> : null}
-                {section.id === "offices" ? <Badge variant="secondary" className="mt-1">{row.is_active ? "Visible" : "Hidden"}</Badge> : null}
+                {section.id === "offices" ? <Badge variant="secondary" className="mt-1">{row['is_active'] ? "Visible" : "Hidden"}</Badge> : null}
               </div>
               <Button size="icon" variant="ghost" aria-label="Edit" onClick={() => setEditing(row)}><Pencil className="size-4" /></Button>
             </li>
@@ -232,9 +232,9 @@ function RowForm({ section, row, onDone }: { section: Section; row: Row | null; 
         if (f.required && (v === undefined || v === null || String(v).trim() === "")) throw new Error(`${f.label} is required.`);
       }
       let payload: Record<string, unknown> = { ...values };
-      const options = (payload.__options as string[] | undefined) ?? [];
-      delete payload.__options;
-      delete payload.id;
+      const options = (payload['__options'] as string[] | undefined) ?? [];
+      delete payload['__options'];
+      delete payload['id'];
       for (const f of section.fields) {
         if (f.type === "datetime") payload[f.key] = payload[f.key] ? new Date(String(payload[f.key])).toISOString() : null;
         if (f.type === "number" && payload[f.key] !== undefined && payload[f.key] !== "") payload[f.key] = Number(payload[f.key]);
