@@ -23,7 +23,7 @@ function Tabs({ tab, setTab }: { tab: string; setTab: (t: string) => void }) {
         ["quizzes", "Tests"],
         ["assignments", "Assignments"],
       ].map(([k, l]) => (
-        <Button key={k} size="sm" variant={tab === k ? "default" : "outline"} onClick={() => setTab(k)} className="shrink-0">
+        <Button key={k} size="sm" variant={tab === k ? "default" : "outline"} onClick={() => setTab(k!)} className="shrink-0">
           {l}
         </Button>
       ))}
