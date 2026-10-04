@@ -160,14 +160,14 @@ function AdminPage() {
         <div className="space-y-4">
           <div className="flex gap-2 overflow-x-auto pb-1">
             {allowed.map((s) => (
-              <Button key={s.id} size="sm" variant={s.id === section.id ? "default" : "outline"} onClick={() => setActive(s.id)} className="shrink-0">
+              <Button key={s.id} size="sm" variant={s.id === section?.id ? "default" : "outline"} onClick={() => setActive(s.id)} className="shrink-0">
 
 
                 {s.label}
               </Button>
             ))}
           </div>
-          <SectionManager key={section.id} section={section} />
+          {section ? <SectionManager key={section.id} section={section} /> : null}
         </div>
       )}
     </AppShell>

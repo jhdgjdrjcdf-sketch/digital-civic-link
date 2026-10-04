@@ -31,7 +31,7 @@ function Tabs({ tab, setTab }: { tab: string; setTab: (t: string) => void }) {
   );
 }
 
-export function LearnExtras({ courseId, lessonId }: { courseId: string; lessonId?: string }) {
+export function LearnExtras({ courseId, lessonId }: { courseId: string; lessonId?: string | undefined }) {
   const [tab, setTab] = useState("notes");
   return (
     <section className="space-y-3">
@@ -76,7 +76,7 @@ function Notes({ lessonId }: { lessonId: string }) {
   );
 }
 
-function Questions({ courseId, lessonId }: { courseId: string; lessonId?: string }) {
+function Questions({ courseId, lessonId }: { courseId: string; lessonId?: string | undefined }) {
   const qc = useQueryClient();
   const { data: session } = useSession();
   const [body, setBody] = useState("");
