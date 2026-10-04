@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { AppShell } from "@/components/AppShell";
+import { LearnExtras } from "@/components/LearnExtras";
 import { EmptyState, ErrorState, LoadingList } from "@/components/States";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -84,6 +85,7 @@ function LearnPage() {
               </li>
             ))}
           </ol>
+          <LearnExtras courseId={courseId} lessonId={current?.id} />
           {progress.data.percent >= 100 ? (
             <Button
               className="w-full"

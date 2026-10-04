@@ -83,6 +83,9 @@ function AcademyPage() {
           <Button asChild size="sm" variant="outline">
             <Link to="/academy/verify">Verify a certificate</Link>
           </Button>
+          <Button asChild size="sm" variant="outline">
+            <Link to="/academy/instructor">Instructor</Link>
+          </Button>
         </div>
 
         <div className="relative">
