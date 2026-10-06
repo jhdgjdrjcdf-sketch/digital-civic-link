@@ -1,10 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Map as LeafletMap, Marker as LeafletMarker } from "leaflet";
 
 export type OfficePin = {
   id: string;
   name: string;
-  candidate_name: string;
+  city: string;
   latitude: number;
   longitude: number;
 };
@@ -26,6 +26,7 @@ export function OfficesMap({ offices, userPosition, selectedId, onSelect }: Prop
   const markersRef = useRef<Record<string, LeafletMarker>>({});
   const userMarkerRef = useRef<LeafletMarker | null>(null);
   const selectRef = useRef(onSelect);
+  const [mapReady, setMapReady] = useState(false);
   selectRef.current = onSelect;
 
   // Create the map once.
@@ -36,9 +37,10 @@ export function OfficesMap({ offices, userPosition, selectedId, onSelect }: Prop
       if (cancelled || !containerRef.current || mapRef.current) return;
 
       const map = L.map(containerRef.current, {
-        center: [33.3, 44.4],
-        zoom: 6,
-        scrollWheelZoom: false,
+        center: [33.2, 43.8],
+        zoom: 5,
+        minZoom: 4,
+        scrollWheelZoom: true,
         attributionControl: true,
       });
       L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -46,6 +48,7 @@ export function OfficesMap({ offices, userPosition, selectedId, onSelect }: Prop
         attribution: "&copy; OpenStreetMap contributors",
       }).addTo(map);
       mapRef.current = map;
+      setMapReady(true);
       // Force a re-layout once the container has its final size.
       setTimeout(() => map.invalidateSize(), 150);
     })();
@@ -54,6 +57,7 @@ export function OfficesMap({ offices, userPosition, selectedId, onSelect }: Prop
       cancelled = true;
       mapRef.current?.remove();
       mapRef.current = null;
+      setMapReady(false);
       markersRef.current = {};
       userMarkerRef.current = null;
     };
@@ -72,15 +76,20 @@ export function OfficesMap({ offices, userPosition, selectedId, onSelect }: Prop
 
       const points: [number, number][] = [];
       offices.forEach((office) => {
+        const active = selectedId === office.id;
         const icon = L.divIcon({
-          className: "",
-          html: `<span style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:9999px;background:#0B1F3A;border:2px solid #C8A24A;color:#fff;font-size:12px;font-weight:700;box-shadow:0 4px 10px rgba(0,0,0,.25)">&#9679;</span>`,
-          iconSize: [28, 28],
-          iconAnchor: [14, 14],
+          className: "office-marker-shell",
+          html: `<span class="office-marker${active ? " office-marker-selected" : ""}"><span></span></span>`,
+          iconSize: active ? [40, 48] : [34, 42],
+          iconAnchor: active ? [20, 44] : [17, 38],
+          tooltipAnchor: [0, -36],
         });
         const marker = L.marker([office.latitude, office.longitude], { icon })
           .addTo(map)
-          .bindTooltip(office.name, { direction: "top", offset: [0, -12] })
+          .bindTooltip(`<strong>${office.name}</strong><br/><small>${office.city}</small>`, {
+            direction: "top",
+            offset: [0, -8],
+          })
           .on("click", () => selectRef.current?.(office.id));
         markersRef.current[office.id] = marker;
         points.push([office.latitude, office.longitude]);
@@ -96,7 +105,7 @@ export function OfficesMap({ offices, userPosition, selectedId, onSelect }: Prop
     return () => {
       cancelled = true;
     };
-  }, [offices, userPosition]);
+  }, [offices, userPosition, selectedId, mapReady]);
 
   // User location marker.
   useEffect(() => {
@@ -110,7 +119,7 @@ export function OfficesMap({ offices, userPosition, selectedId, onSelect }: Prop
       if (!userPosition) return;
       const icon = L.divIcon({
         className: "",
-        html: `<span style="display:block;width:16px;height:16px;border-radius:9999px;background:#2563eb;border:3px solid #fff;box-shadow:0 0 0 4px rgba(37,99,235,.25)"></span>`,
+        html: `<span class="office-user-marker"></span>`,
         iconSize: [16, 16],
         iconAnchor: [8, 8],
       });
@@ -121,7 +130,7 @@ export function OfficesMap({ offices, userPosition, selectedId, onSelect }: Prop
     return () => {
       cancelled = true;
     };
-  }, [userPosition]);
+  }, [userPosition, mapReady]);
 
   // Pan to the selected office.
   useEffect(() => {
@@ -133,7 +142,7 @@ export function OfficesMap({ offices, userPosition, selectedId, onSelect }: Prop
       animate: true,
     });
     markersRef.current[selectedId]?.openTooltip();
-  }, [selectedId, offices]);
+  }, [selectedId, offices, mapReady]);
 
   return (
     <div
@@ -141,7 +150,7 @@ export function OfficesMap({ offices, userPosition, selectedId, onSelect }: Prop
       dir="ltr"
       role="application"
       aria-label="Map of offices"
-      className="h-[260px] w-full overflow-hidden rounded-xl border border-border bg-muted sm:h-[340px]"
+      className="h-[360px] w-full overflow-hidden border border-border bg-muted sm:h-[520px] lg:h-[620px]"
     />
   );
 }

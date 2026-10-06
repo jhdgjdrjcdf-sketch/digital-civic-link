@@ -837,6 +837,130 @@ export type Database = {
         }
         Relationships: []
       }
+      office_candidates: {
+        Row: {
+          achievements: string[]
+          city: string
+          created_at: string
+          cv_summary: string
+          display_order: number
+          education: string[]
+          email: string | null
+          experience: string[]
+          full_name: string
+          id: string
+          is_visible: boolean
+          office_id: string
+          phone: string | null
+          political_role: string
+          portrait_url: string | null
+          previous_positions: string[]
+          responsibilities: string[]
+          summary: string
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          achievements?: string[]
+          city?: string
+          created_at?: string
+          cv_summary?: string
+          display_order?: number
+          education?: string[]
+          email?: string | null
+          experience?: string[]
+          full_name: string
+          id?: string
+          is_visible?: boolean
+          office_id: string
+          phone?: string | null
+          political_role?: string
+          portrait_url?: string | null
+          previous_positions?: string[]
+          responsibilities?: string[]
+          summary?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          achievements?: string[]
+          city?: string
+          created_at?: string
+          cv_summary?: string
+          display_order?: number
+          education?: string[]
+          email?: string | null
+          experience?: string[]
+          full_name?: string
+          id?: string
+          is_visible?: boolean
+          office_id?: string
+          phone?: string | null
+          political_role?: string
+          portrait_url?: string | null
+          previous_positions?: string[]
+          responsibilities?: string[]
+          summary?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "office_candidates_office_id_fkey"
+            columns: ["office_id"]
+            isOneToOne: false
+            referencedRelation: "offices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      office_officials: {
+        Row: {
+          created_at: string
+          display_order: number
+          email: string | null
+          full_name: string
+          id: string
+          is_visible: boolean
+          office_id: string
+          phone: string | null
+          responsibility: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          email?: string | null
+          full_name: string
+          id?: string
+          is_visible?: boolean
+          office_id: string
+          phone?: string | null
+          responsibility: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          email?: string | null
+          full_name?: string
+          id?: string
+          is_visible?: boolean
+          office_id?: string
+          phone?: string | null
+          responsibility?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "office_officials_office_id_fkey"
+            columns: ["office_id"]
+            isOneToOne: false
+            referencedRelation: "offices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       offices: {
         Row: {
           address: string
@@ -846,6 +970,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           description: string
+          email: string | null
           id: string
           image_url: string | null
           is_active: boolean
@@ -854,6 +979,7 @@ export type Database = {
           name: string
           phone: string | null
           updated_at: string
+          whatsapp: string | null
         }
         Insert: {
           address?: string
@@ -863,6 +989,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string
+          email?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean
@@ -871,6 +998,7 @@ export type Database = {
           name: string
           phone?: string | null
           updated_at?: string
+          whatsapp?: string | null
         }
         Update: {
           address?: string
@@ -880,6 +1008,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string
+          email?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean
@@ -888,6 +1017,7 @@ export type Database = {
           name?: string
           phone?: string | null
           updated_at?: string
+          whatsapp?: string | null
         }
         Relationships: []
       }
