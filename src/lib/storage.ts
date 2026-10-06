@@ -20,9 +20,10 @@ export function useSignedUrl(path?: string | null) {
   });
 }
 
-export async function uploadOfficeImage(file: File) {
+export async function uploadOfficeImage(file: File, folder = "offices") {
   const extension = file.name.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
-  const path = `offices/${crypto.randomUUID()}.${extension}`;
+  const safeFolder = folder.replace(/[^a-z0-9-]/gi, "").toLowerCase() || "offices";
+  const path = `${safeFolder}/${crypto.randomUUID()}.${extension}`;
   const { error } = await supabase.storage
     .from(OFFICE_BUCKET)
     .upload(path, file, { cacheControl: "3600", upsert: false });

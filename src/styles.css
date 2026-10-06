@@ -161,3 +161,64 @@
   height: 3px;
   border-radius: 999px;
 }
+
+.office-marker-shell {
+  background: transparent;
+  border: 0;
+}
+
+.office-marker {
+  position: relative;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 3px solid var(--color-accent);
+  border-radius: 50% 50% 50% 8px;
+  background: var(--color-primary);
+  box-shadow: var(--shadow-raised);
+  transform: rotate(-45deg);
+  transition: width 180ms ease, height 180ms ease, filter 180ms ease;
+}
+
+.office-marker > span {
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--color-accent);
+  border-radius: 999px;
+  background: var(--color-primary-foreground);
+}
+
+.office-marker-selected {
+  width: 40px;
+  height: 40px;
+  filter: drop-shadow(0 6px 9px color-mix(in oklab, var(--color-primary) 35%, transparent));
+}
+
+.office-user-marker {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border: 3px solid var(--color-card);
+  border-radius: 999px;
+  background: var(--color-chart-3);
+  box-shadow: 0 0 0 5px color-mix(in oklab, var(--color-chart-3) 25%, transparent);
+}
+
+.leaflet-container {
+  font-family: var(--font-sans);
+}
+
+.leaflet-tooltip {
+  border-color: var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-card);
+  color: var(--color-card-foreground);
+  box-shadow: var(--shadow-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .office-marker {
+    transition: none;
+  }
+}
