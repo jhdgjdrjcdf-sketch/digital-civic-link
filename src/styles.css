@@ -207,6 +207,12 @@
 
 .leaflet-container {
   font-family: var(--font-sans);
+  background: color-mix(in oklab, var(--color-primary) 60%, #060d1f);
+}
+
+/* Dark navy-tinted map tiles so the map matches the app's identity. */
+.leaflet-tile {
+  filter: invert(1) hue-rotate(190deg) saturate(0.5) brightness(0.85) contrast(1.05);
 }
 
 .leaflet-tooltip {
