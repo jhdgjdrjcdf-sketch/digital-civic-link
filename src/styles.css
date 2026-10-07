@@ -207,6 +207,12 @@
 
 .leaflet-container {
   font-family: var(--font-sans);
+  background: color-mix(in oklab, var(--color-primary) 60%, #060d1f);
+}
+
+/* Turn the standard light map tiles into a dark navy-styled basemap. */
+.leaflet-tile {
+  filter: invert(1) hue-rotate(190deg) saturate(0.45) brightness(0.85) contrast(1.05);
 }
 
 .leaflet-tooltip {
