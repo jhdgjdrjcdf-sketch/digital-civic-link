@@ -971,6 +971,7 @@ export type Database = {
           created_by: string | null
           description: string
           email: string | null
+          governorate: string
           id: string
           image_url: string | null
           is_active: boolean
@@ -990,6 +991,7 @@ export type Database = {
           created_by?: string | null
           description?: string
           email?: string | null
+          governorate?: string
           id?: string
           image_url?: string | null
           is_active?: boolean
@@ -1009,6 +1011,7 @@ export type Database = {
           created_by?: string | null
           description?: string
           email?: string | null
+          governorate?: string
           id?: string
           image_url?: string | null
           is_active?: boolean

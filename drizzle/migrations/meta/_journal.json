@@ -15,6 +15,13 @@
       "when": 1791277744298,
       "tag": "0001_expand_office_directory",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791346819078,
+      "tag": "0002_offices_governorate",
+      "breakpoints": true
     }
   ]
 }
