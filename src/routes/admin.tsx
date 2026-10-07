@@ -17,6 +17,7 @@ import { COURSE_CATEGORIES, COURSE_LEVELS } from "@/lib/academy";
 import { type AppRole, friendlyError, useRoles } from "@/lib/auth";
 import { NEWS_CATEGORIES_ADMIN } from "@/lib/admin-config";
 import { uploadOfficeImage, useSignedUrl } from "@/lib/storage";
+import { IRAQ_GOVERNORATES } from "@/lib/governorates";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -32,7 +33,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-type FieldType = "text" | "textarea" | "select" | "datetime" | "number" | "checkbox" | "lines" | "image";
+type FieldType = "office" | "text" | "textarea" | "select" | "datetime" | "number" | "checkbox" | "lines" | "image";
 type Field = { key: string; label: string; type: FieldType; options?: readonly { value: string; label: string }[]; required?: boolean };
 type Section = {
   id: string;
@@ -87,7 +88,7 @@ const SECTIONS: Section[] = [
   },
   {
     id: "offices", label: "مكاتب التجمع والمرشحين", table: "offices", role: ["content_admin"], image: "office",
-    select: "id, name, candidate_name, description, address, city, phone, latitude, longitude, category, is_active, image_url", order: "name", titleKey: "name",
+    select: "id, name, candidate_name, description, address, city, governorate, phone, email, whatsapp, latitude, longitude, category, is_active, image_url", order: "name", titleKey: "name",
     fields: [
       { key: "image_url", label: "Photo", type: "image" },
       { key: "name", label: "Office name", type: "text", required: true },
@@ -96,12 +97,57 @@ const SECTIONS: Section[] = [
       { key: "description", label: "Description", type: "textarea" },
       { key: "address", label: "Address", type: "text", required: true },
       { key: "city", label: "City", type: "text", required: true },
+      { key: "governorate", label: "Governorate", type: "select", options: IRAQ_GOVERNORATES, required: true },
       { key: "phone", label: "Phone", type: "text" },
+      { key: "email", label: "Email", type: "text" },
+      { key: "whatsapp", label: "WhatsApp", type: "text" },
       { key: "latitude", label: "Latitude", type: "number", required: true },
       { key: "longitude", label: "Longitude", type: "number", required: true },
       { key: "is_active", label: "Visible to public", type: "checkbox" },
     ],
-    defaults: { is_active: true, category: "office", candidate_name: "", description: "" },
+    defaults: { is_active: true, category: "office", candidate_name: "", description: "", governorate: "Baghdad" },
+  },
+  {
+    id: "candidates", label: "المرشحين", table: "office_candidates", role: ["content_admin"], image: "office",
+    select: "id, office_id, full_name, political_role, city, portrait_url, summary, cv_summary, education, experience, previous_positions, achievements, responsibilities, phone, email, website_url, display_order, is_visible",
+    order: "display_order", titleKey: "full_name",
+    fields: [
+      { key: "portrait_url", label: "Portrait", type: "image" },
+      { key: "office_id", label: "Office / governorate", type: "office", required: true },
+      { key: "full_name", label: "Full name", type: "text", required: true },
+      { key: "political_role", label: "Political role", type: "text", required: true },
+      { key: "city", label: "City", type: "text" },
+      { key: "summary", label: "Short biography", type: "textarea" },
+      { key: "cv_summary", label: "CV summary", type: "textarea" },
+      { key: "education", label: "Education (one per line)", type: "lines" },
+      { key: "experience", label: "Experience (one per line)", type: "lines" },
+      { key: "previous_positions", label: "Previous positions (one per line)", type: "lines" },
+      { key: "achievements", label: "Achievements (one per line)", type: "lines" },
+      { key: "responsibilities", label: "Responsibilities (one per line)", type: "lines" },
+      { key: "phone", label: "Phone", type: "text" },
+      { key: "email", label: "Email", type: "text" },
+      { key: "website_url", label: "Website", type: "text" },
+      { key: "display_order", label: "Display order", type: "number" },
+      { key: "is_visible", label: "Visible to public", type: "checkbox" },
+    ],
+    defaults: { is_visible: true, display_order: 0, city: "", summary: "", cv_summary: "", education: [], experience: [], previous_positions: [], achievements: [], responsibilities: [] },
+    beforeSave: (v) => ({ ...v, phone: v['phone'] || null, email: v['email'] || null, website_url: v['website_url'] || null }),
+  },
+  {
+    id: "officials", label: "ممثلين المحافظة", table: "office_officials", role: ["content_admin"],
+    select: "id, office_id, full_name, responsibility, phone, email, display_order, is_visible",
+    order: "display_order", titleKey: "full_name",
+    fields: [
+      { key: "office_id", label: "Office / governorate", type: "office", required: true },
+      { key: "full_name", label: "Full name", type: "text", required: true },
+      { key: "responsibility", label: "Responsibility", type: "text", required: true },
+      { key: "phone", label: "Phone", type: "text" },
+      { key: "email", label: "Email", type: "text" },
+      { key: "display_order", label: "Display order", type: "number" },
+      { key: "is_visible", label: "Visible to public", type: "checkbox" },
+    ],
+    defaults: { is_visible: true, display_order: 0 },
+    beforeSave: (v) => ({ ...v, phone: v['phone'] || null, email: v['email'] || null }),
   },
   {
     id: "courses", label: "أكاديمية القيادة", table: "courses", role: ["academy_manager"], image: "course",
@@ -207,6 +253,7 @@ function SectionManager({ section }: { section: Section }) {
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold">{String(row[section.titleKey] ?? "")}</p>
                 {section.statusKey ? <Badge variant="secondary" className="mt-1">{String(row[section.statusKey])}</Badge> : null}
+                {"is_visible" in row ? <Badge variant="secondary" className="mt-1">{row['is_visible'] ? "Visible" : "Hidden"}</Badge> : null}
                 {section.id === "offices" ? <Badge variant="secondary" className="mt-1">{row['is_active'] ? "Visible" : "Hidden"}</Badge> : null}
               </div>
               <Button size="icon" variant="ghost" aria-label="Edit" onClick={() => setEditing(row)}><Pencil className="size-4" /></Button>
@@ -257,8 +304,8 @@ function RowForm({ section, row, onDone }: { section: Section; row: Row | null; 
       if (file && id) {
         if (!IMAGE_TYPES.includes(file.type)) throw new Error("Use a JPG, PNG or WebP image.");
         if (file.size > 5 * 1024 * 1024) throw new Error("Image must be under 5 MB.");
-        const key = section.image === "course" ? "cover_url" : "image_url";
-        const path = section.image === "course" ? await uploadAcademyFile(id, "covers", file) : await uploadOfficeImage(file);
+        const key = section.fields.find((f) => f.type === "image")!.key;
+        const path = section.image === "course" ? await uploadAcademyFile(id, "covers", file) : await uploadOfficeImage(file, section.id === "candidates" ? "candidates" : "offices");
         const { error } = await supabase.from(section.table as "news_articles").update({ [key]: path } as never).eq("id", id);
         if (error) throw error;
       }
@@ -293,6 +340,8 @@ function RowForm({ section, row, onDone }: { section: Section; row: Row | null; 
             <input type="checkbox" className="size-5" checked={Boolean(values[f.key])} onChange={(e) => set(f.key, e.target.checked)} />
           ) : f.type === "lines" ? (
             <Textarea value={((values[f.key] as string[]) ?? []).join("\n")} onChange={(e) => set(f.key, e.target.value.split("\n").map((s) => s.trim()).filter(Boolean))} />
+          ) : f.type === "office" ? (
+            <OfficeSelect value={String(values[f.key] ?? "")} onChange={(v) => set(f.key, v)} />
           ) : f.type === "select" ? (
             <select className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm" value={String(values[f.key] ?? "")} onChange={(e) => set(f.key, e.target.value)}>
               {f.options?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -333,5 +382,22 @@ function ImageField({ kind, path, title, file, onFile, onRemove }: { kind: "offi
         {path || file ? <Button type="button" variant="outline" onClick={onRemove}>Remove</Button> : null}
       </div>
     </div>
+  );
+}
+
+function OfficeSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const q = useQuery({
+    queryKey: ["admin", "office-options"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("offices").select("id, name, governorate").order("governorate");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+  return (
+    <select className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm" value={value} onChange={(e) => onChange(e.target.value)}>
+      <option value="">Select an office…</option>
+      {q.data?.map((o) => <option key={o.id} value={o.id}>{o.governorate || "—"} · {o.name}</option>)}
+    </select>
   );
 }

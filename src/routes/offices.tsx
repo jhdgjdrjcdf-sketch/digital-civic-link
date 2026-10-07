@@ -1,7 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { lazy, Suspense, useMemo, useState } from "react";
-import { Building2, Compass, MapPin, Navigation, Phone, Search, X } from "lucide-react";
+import { Building2, Compass, Mail, MapPin, Navigation, Phone, Search, UserRound, X } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { IRAQ_GOVERNORATES } from "@/lib/governorates";
+import { useSignedUrl } from "@/lib/storage";
 
 import { AppShell } from "@/components/AppShell";
 import { EmptyState, ErrorState, LoadingList } from "@/components/States";
@@ -45,6 +48,7 @@ type Office = {
   latitude: number;
   longitude: number;
   category: string;
+  governorate: string;
 };
 
 type Coords = { lat: number; lng: number };
@@ -112,6 +116,7 @@ function useGeolocation() {
 function OfficesPage() {
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [governorate, setGovernorate] = useState("");
   const geo = useGeolocation();
 
   const query = useQuery({
@@ -120,7 +125,7 @@ function OfficesPage() {
       const { data, error } = await supabase
         .from("offices")
         .select(
-          "id,name,candidate_name,description,address,city,phone,latitude,longitude,category",
+          "id,name,candidate_name,description,address,city,phone,latitude,longitude,category,governorate",
         )
         .eq("is_active", true)
         .order("name", { ascending: true });
@@ -137,15 +142,16 @@ function OfficesPage() {
         : null,
     }));
     const term = search.trim().toLowerCase();
+    const byGov = governorate ? list.filter((o) => o.governorate === governorate) : list;
     const filtered = term
-      ? list.filter((o) =>
+      ? byGov.filter((o) =>
           [o.name, o.candidate_name, o.city, o.address].join(" ").toLowerCase().includes(term),
         )
-      : list;
+      : byGov;
     return geo.position
       ? [...filtered].sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0))
       : filtered;
-  }, [query.data, geo.position, search]);
+  }, [query.data, geo.position, search, governorate]);
 
   const selected = offices.find((o) => o.id === selectedId) ?? null;
   const nearest = geo.position ? offices[0] : null;
@@ -191,6 +197,31 @@ function OfficesPage() {
             <p className="mt-2 text-xs text-destructive">{geo.message}</p>
           ) : null}
         </div>
+
+        <div className="card-soft space-y-2 p-3">
+          <label htmlFor="gov" className="text-sm font-semibold">Choose a governorate</label>
+          <select
+            id="gov"
+            className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm"
+            value={governorate}
+            onChange={(e) => {
+              const g = e.target.value;
+              setGovernorate(g);
+              const first = (query.data ?? []).find((o) => o.governorate === g);
+              setSelectedId(first?.id ?? null);
+            }}
+          >
+            <option value="">All governorates</option>
+            {IRAQ_GOVERNORATES.map((g) => (
+              <option key={g.value} value={g.value}>{g.label}</option>
+            ))}
+          </select>
+          {governorate && !(query.data ?? []).some((o) => o.governorate === governorate) ? (
+            <p className="text-xs text-muted-foreground">No office has been added for this governorate yet.</p>
+          ) : null}
+        </div>
+
+        {selected ? <GovernoratePeople officeId={selected.id} /> : null}
 
         <div className="relative">
           <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -317,5 +348,112 @@ function OfficeDetails({
         </a>
       </Button>
     </section>
+  );
+}
+
+type Candidate = {
+  id: string; full_name: string; political_role: string; city: string; portrait_url: string | null;
+  summary: string; cv_summary: string; education: string[]; experience: string[]; previous_positions: string[];
+  achievements: string[]; responsibilities: string[]; phone: string | null; email: string | null; website_url: string | null;
+};
+
+function GovernoratePeople({ officeId }: { officeId: string }) {
+  const [open, setOpen] = useState<Candidate | null>(null);
+  const q = useQuery({
+    queryKey: ["office-people", officeId],
+    queryFn: async () => {
+      const [c, o] = await Promise.all([
+        supabase.from("office_candidates").select("*").eq("office_id", officeId).eq("is_visible", true).order("display_order"),
+        supabase.from("office_officials").select("id,full_name,responsibility,phone,email").eq("office_id", officeId).eq("is_visible", true).order("display_order"),
+      ]);
+      if (c.error) throw c.error;
+      if (o.error) throw o.error;
+      return { candidates: (c.data ?? []) as Candidate[], officials: o.data ?? [] };
+    },
+  });
+  if (q.isPending) return <LoadingList rows={2} />;
+  if (q.isError) return <ErrorState error={q.error} onRetry={() => q.refetch()} />;
+  const { candidates, officials } = q.data;
+  return (
+    <section className="space-y-3">
+      <h2 className="text-arabic text-base font-bold">المرشحين</h2>
+      {candidates.length ? (
+        <ul className="space-y-2">
+          {candidates.map((c) => (
+            <li key={c.id}>
+              <button type="button" onClick={() => setOpen(c)} className="card-soft flex w-full items-center gap-3 p-3 text-start transition hover:shadow-md">
+                <Portrait path={c.portrait_url} name={c.full_name} />
+                <div className="min-w-0">
+                  <p className="text-arabic truncate font-semibold">{c.full_name}</p>
+                  <p className="truncate text-xs text-muted-foreground">{c.political_role}</p>
+                </div>
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : <p className="text-xs text-muted-foreground">No candidates listed for this office yet.</p>}
+
+      <h2 className="text-arabic text-base font-bold">ممثلين المحافظة</h2>
+      {officials.length ? (
+        <ul className="card-soft divide-y divide-border">
+          {officials.map((o) => (
+            <li key={o.id} className="p-3 text-sm">
+              <p className="text-arabic font-semibold">{o.full_name}</p>
+              <p className="text-xs text-muted-foreground">{o.responsibility}</p>
+              <div className="mt-1 flex flex-wrap gap-3 text-xs">
+                {o.phone ? <a href={`tel:${o.phone}`} dir="ltr" className="flex items-center gap-1 text-accent"><Phone className="size-3" />{o.phone}</a> : null}
+                {o.email ? <a href={`mailto:${o.email}`} className="flex items-center gap-1 text-accent"><Mail className="size-3" />{o.email}</a> : null}
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : <p className="text-xs text-muted-foreground">No representatives listed for this office yet.</p>}
+
+      <Sheet open={!!open} onOpenChange={(v) => !v && setOpen(null)}>
+        <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto">
+          {open ? <CandidateProfile c={open} /> : null}
+        </SheetContent>
+      </Sheet>
+    </section>
+  );
+}
+
+function Portrait({ path, name, large }: { path: string | null; name: string; large?: boolean }) {
+  const url = useSignedUrl(path);
+  const size = large ? "size-24" : "size-12";
+  return url.data ? (
+    <img src={url.data} alt={name} className={`${size} shrink-0 rounded-full object-cover`} />
+  ) : (
+    <span className={`${size} flex shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground`}><UserRound className="size-1/2" /></span>
+  );
+}
+
+function CandidateProfile({ c }: { c: Candidate }) {
+  const lists: [string, string[]][] = [
+    ["Education", c.education], ["Experience", c.experience], ["Previous positions", c.previous_positions],
+    ["Achievements", c.achievements], ["Responsibilities", c.responsibilities],
+  ];
+  return (
+    <div className="space-y-4 pb-4">
+      <SheetHeader className="items-center text-center">
+        <Portrait path={c.portrait_url} name={c.full_name} large />
+        <SheetTitle className="text-arabic">{c.full_name}</SheetTitle>
+        <p className="text-sm text-muted-foreground">{c.political_role}{c.city ? ` · ${c.city}` : ""}</p>
+      </SheetHeader>
+      {c.summary ? <p className="text-sm">{c.summary}</p> : null}
+      {c.cv_summary ? (<div><h3 className="mb-1 text-sm font-bold">CV</h3><p className="text-sm text-muted-foreground">{c.cv_summary}</p></div>) : null}
+      {lists.filter(([, xs]) => xs?.length).map(([title, xs]) => (
+        <div key={title}>
+          <h3 className="mb-1 text-sm font-bold">{title}</h3>
+          <ul className="list-disc space-y-0.5 ps-5 text-sm text-muted-foreground">{xs.map((x) => <li key={x}>{x}</li>)}</ul>
+        </div>
+      ))}
+      <div className="flex flex-wrap gap-2">
+        {c.phone ? <Button asChild size="sm" variant="outline"><a href={`tel:${c.phone}`}><Phone className="size-4" />Call</a></Button> : null}
+        {c.email ? <Button asChild size="sm" variant="outline"><a href={`mailto:${c.email}`}><Mail className="size-4" />Email</a></Button> : null}
+        {c.website_url ? <Button asChild size="sm" variant="outline"><a href={c.website_url} target="_blank" rel="noopener noreferrer">Website</a></Button> : null}
+      </div>
+      {!c.summary && !c.cv_summary && lists.every(([, xs]) => !xs?.length) ? <p className="text-xs text-muted-foreground">The full CV has not been added yet.</p> : null}
+    </div>
   );
 }
