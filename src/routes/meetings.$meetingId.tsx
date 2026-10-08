@@ -148,7 +148,7 @@ function MeetingRoom() {
   });
 
   const act = useMutation({
-    mutationFn: (input: Parameters<typeof runAction>[0]["data"]) => runAction({ data: input }),
+    mutationFn: (input: Record<string, unknown>) => runAction({ data: input }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["meeting", meetingId] }),
     onError: (e) => toast.error(friendlyError(e)),
   });
