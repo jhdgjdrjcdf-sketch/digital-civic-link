@@ -11,6 +11,7 @@ import {
   LogIn,
   Settings2,
   WifiOff,
+  Video,
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 
@@ -26,6 +27,7 @@ const TABS = [
 ] as const;
 
 export const MORE_LINKS = [
+  { to: "/meetings", title: "الاجتماعات", desc: "Internal live meetings for members", icon: Video },
   { to: "/polls", title: "Polls", desc: "Take part in open consultations", icon: BarChart3 },
   {
     to: "/offices",
