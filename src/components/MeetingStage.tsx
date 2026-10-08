@@ -58,7 +58,7 @@ export default function MeetingStage({
       audio={canPublish}
       video={false}
       data-lk-theme="default"
-      onDisconnected={onDisconnected}
+      onDisconnected={() => onDisconnected?.()}
       className="surface-navy aspect-video w-full overflow-hidden rounded-2xl"
     >
       <Stage canPublish={canPublish} />
