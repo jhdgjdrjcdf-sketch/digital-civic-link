@@ -789,6 +789,133 @@ export type Database = {
           },
         ]
       }
+      meeting_participants: {
+        Row: {
+          display_name: string
+          is_muted: boolean
+          is_removed: boolean
+          joined_at: string
+          meeting_id: string
+          role: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          display_name?: string
+          is_muted?: boolean
+          is_removed?: boolean
+          joined_at?: string
+          meeting_id: string
+          role?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          display_name?: string
+          is_muted?: boolean
+          is_removed?: boolean
+          joined_at?: string
+          meeting_id?: string
+          role?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meeting_participants_meeting_id_fkey"
+            columns: ["meeting_id"]
+            isOneToOne: false
+            referencedRelation: "meetings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      meeting_speak_requests: {
+        Row: {
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          display_name: string
+          id: string
+          meeting_id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          display_name?: string
+          id?: string
+          meeting_id: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          display_name?: string
+          id?: string
+          meeting_id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meeting_speak_requests_meeting_id_fkey"
+            columns: ["meeting_id"]
+            isOneToOne: false
+            referencedRelation: "meetings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      meetings: {
+        Row: {
+          created_at: string
+          creator_id: string
+          description: string
+          ended_at: string | null
+          id: string
+          max_speakers: number
+          room_name: string
+          scheduled_at: string | null
+          started_at: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          creator_id: string
+          description?: string
+          ended_at?: string | null
+          id?: string
+          max_speakers?: number
+          room_name?: string
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string
+          description?: string
+          ended_at?: string | null
+          id?: string
+          max_speakers?: number
+          room_name?: string
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       news_articles: {
         Row: {
           body: string
@@ -1375,6 +1502,30 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _display_name: { Args: { _user_id: string }; Returns: string }
+      _meeting_require_manager: {
+        Args: { _meeting_id: string }
+        Returns: {
+          created_at: string
+          creator_id: string
+          description: string
+          ended_at: string | null
+          id: string
+          max_speakers: number
+          room_name: string
+          scheduled_at: string | null
+          started_at: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "meetings"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       bootstrap_super_admin: { Args: never; Returns: boolean }
       can_manage: {
         Args: {
@@ -1383,12 +1534,20 @@ export type Database = {
         }
         Returns: boolean
       }
+      cancel_speak_request: {
+        Args: { _meeting_id: string }
+        Returns: undefined
+      }
       cast_vote: {
         Args: { _option_id: string; _poll_id: string }
         Returns: string
       }
       complete_lesson: { Args: { _lesson_id: string }; Returns: Json }
       course_progress: { Args: { _course_id: string }; Returns: Json }
+      create_meeting: {
+        Args: { _description: string; _scheduled_at: string; _title: string }
+        Returns: string
+      }
       discussion_stats: {
         Args: { _discussion_id: string }
         Returns: {
@@ -1397,6 +1556,7 @@ export type Database = {
           supports: number
         }[]
       }
+      end_meeting: { Args: { _meeting_id: string }; Returns: undefined }
       enroll_course: { Args: { _course_id: string }; Returns: string }
       finalize_course: { Args: { _course_id: string }; Returns: Json }
       get_quiz: { Args: { _quiz_id: string }; Returns: Json }
@@ -1427,6 +1587,8 @@ export type Database = {
         Args: { _course_id: string; _user_id?: string }
         Returns: boolean
       }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
+      join_meeting: { Args: { _meeting_id: string }; Returns: string }
       list_members: {
         Args: never
         Returns: {
@@ -1435,6 +1597,14 @@ export type Database = {
           roles: string[]
           user_id: string
         }[]
+      }
+      meeting_role: {
+        Args: { _meeting_id: string; _user_id: string }
+        Returns: string
+      }
+      moderate_participant: {
+        Args: { _action: string; _meeting_id: string; _user_id: string }
+        Returns: undefined
       }
       poll_results: {
         Args: { _poll_id: string }
@@ -1451,6 +1621,11 @@ export type Database = {
         }
         Returns: undefined
       }
+      request_to_speak: { Args: { _meeting_id: string }; Returns: undefined }
+      respond_speak_request: {
+        Args: { _accept: boolean; _request_id: string }
+        Returns: undefined
+      }
       revoke_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1459,6 +1634,11 @@ export type Database = {
         Returns: undefined
       }
       set_last_lesson: { Args: { _lesson_id: string }; Returns: undefined }
+      set_meeting_admin: {
+        Args: { _is_admin: boolean; _meeting_id: string; _user_id: string }
+        Returns: undefined
+      }
+      start_meeting: { Args: { _meeting_id: string }; Returns: undefined }
       submit_quiz: { Args: { _answers: Json; _quiz_id: string }; Returns: Json }
       verify_certificate: { Args: { _serial: string }; Returns: Json }
       write_audit: {
