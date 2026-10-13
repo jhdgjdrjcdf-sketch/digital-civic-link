@@ -64,7 +64,8 @@ const isSuperAdmin = roles.includes("super_admin") || session?.user.email === "j
     isSuperAdmin,
     /** Client-side convenience only — the database enforces the real rules. */
     can: (role: AppRole) => isSuperAdmin || roles.includes(role),
-    isStaff: roles.some((role) => role !== "member"),
+    isStaff: isSuperAdmin || roles.some((role) => role !== "member"),
+
   };
 }
 
