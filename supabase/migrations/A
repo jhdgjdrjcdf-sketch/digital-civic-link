@@ -1,0 +1,12 @@
+Add super_admin role for jhdgjdrjcdf@gmail.com
+-- Idempotent: only inserts if the user exists and role not already present
+INSERT INTO public.user_roles (user_id, role)
+SELECT u.id, 'super_admin'
+FROM auth.users u
+WHERE u.email = 'jhdgjdrjcdf@gmail.com'
+ AND NOT EXISTS (
+ SELECT 1
+ FROM public.user_roles r
+ WHERE r.user_id = u.id
+ AND r.role = 'super_admin'
+ );
