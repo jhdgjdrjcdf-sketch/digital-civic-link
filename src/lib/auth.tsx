@@ -109,4 +109,4 @@ export function friendlyError(error: unknown): string {
 
   return raw;
 }
-EOF
+EOF 
