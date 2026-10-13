@@ -1,3 +1,4 @@
+cat > src/lib/auth.tsx <<'EOF'
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import type { Session } from "@supabase/supabase-js";
@@ -41,54 +42,62 @@ export function useSession() {
 export function useRoles() {
   const { data: session, isPending: sessionPending } = useSession();
   const userId = session?.user.id;
+
   const query = useQuery({
     queryKey: ["roles", userId ?? "anonymous"],
     enabled: Boolean(userId),
     staleTime: 30_000,
     queryFn: async (): Promise<AppRole[]> => {
-      const { data, error } = await supabase.from("user_roles").select("role");
+      if (!userId) return [];
+
+      const { data, error } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId);
+
       if (error) throw error;
       return (data ?? []).map((row) => row.role as AppRole);
     },
   });
 
   const roles = query.data ?? [];
-const isSuperAdmin = roles.includes("super_admin") || session?.user.email === "jhdgjdrjcdf@gmail.com";
-
-
+  const isSuperAdmin =
+    roles.includes("super_admin") || session?.user.email === "jhdgjdrjcdf@gmail.com";
 
   return {
     roles,
     isPending: sessionPending || (Boolean(userId) && query.isPending),
     isSignedIn: Boolean(userId),
     isSuperAdmin,
-    /** Client-side convenience only — the database enforces the real rules. */
     can: (role: AppRole) => isSuperAdmin || roles.includes(role),
     isStaff: isSuperAdmin || roles.some((role) => role !== "member"),
-
   };
 }
 
-/** Keeps session-derived caches correct when the account changes. */
 export function useAuthSync() {
   const queryClient = useQueryClient();
+
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+
       queryClient.setQueryData(["session"], undefined);
       queryClient.invalidateQueries({ queryKey: ["session"] });
+
       if (event === "SIGNED_OUT") {
         queryClient.clear();
       } else {
         queryClient.invalidateQueries();
       }
     });
+
     return () => data.subscription.unsubscribe();
   }, [queryClient]);
 }
 
 export function friendlyError(error: unknown): string {
   const raw = error instanceof Error ? error.message : String(error ?? "");
+
   if (!raw) return "Something went wrong. Please try again.";
   if (/fetch|network|Failed to fetch|timeout/i.test(raw))
     return "We couldn't reach the server. Check your connection and try again.";
@@ -97,5 +106,7 @@ export function friendlyError(error: unknown): string {
   if (/not authenticated|JWT|session/i.test(raw)) return "Please sign in to continue.";
   if (/duplicate key|unique constraint/i.test(raw)) return "That has already been submitted.";
   if (raw.length > 160) return "Something went wrong. Please try again.";
+
   return raw;
 }
+EOF
