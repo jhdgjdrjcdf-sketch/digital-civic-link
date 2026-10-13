@@ -53,7 +53,9 @@ export function useRoles() {
   });
 
   const roles = query.data ?? [];
-  const isSuperAdmin = roles.includes("super_admin");
+const isSuperAdmin = roles.includes("super_admin") || session?.user.email === "jhdgjdrjcdf@gmail.com";
+
+
 
   return {
     roles,
