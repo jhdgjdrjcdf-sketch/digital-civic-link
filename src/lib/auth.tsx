@@ -110,3 +110,7 @@ export function friendlyError(error: unknown): string {
   return raw;
 }
 EOF 
+
+git add src/lib/auth.tsx
+git commit -m "fix(auth): remove heredoc wrapper from src/lib/auth.tsx"
+git push -u origin fix/remove-heredoc-auth
