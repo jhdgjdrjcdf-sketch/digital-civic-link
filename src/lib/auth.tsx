@@ -138,14 +138,4 @@ export function friendlyError(error: unknown): string {
   return raw;
 } 
 
-  if (!raw) return "Something went wrong. Please try again.";
-  if (/fetch|network|Failed to fetch|timeout/i.test(raw))
-    return "We couldn't reach the server. Check your connection and try again.";
-  if (/not authorized|permission|row-level security|denied/i.test(raw))
-    return "You don't have permission to do that.";
-  if (/not authenticated|JWT|session/i.test(raw)) return "Please sign in to continue.";
-  if (/duplicate key|unique constraint/i.test(raw)) return "That has already been submitted.";
-  if (raw.length > 160) return "Something went wrong. Please try again.";
-
-  return raw;
-}
+  
