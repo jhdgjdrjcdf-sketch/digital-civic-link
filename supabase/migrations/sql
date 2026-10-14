@@ -1,2 +1,5 @@
 INSERT INTO public.user_roles (user_id, role)
-VALUES ('<YOUR_USER_ID>', 'super_admin');
+SELECT id, 'super_admin'
+FROM auth.users
+WHERE email = 'jhdgjdrjcdf@gmail.com'
+ON CONFLICT DO N
