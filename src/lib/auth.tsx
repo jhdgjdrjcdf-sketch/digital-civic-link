@@ -134,8 +134,3 @@ export function friendlyError(error: unknown): string {
     return "That has already been submitted.";
   if (raw.length > 160)
     return "Something went wrong. Please try again.";
-
-  return raw;
-} 
-
-  
