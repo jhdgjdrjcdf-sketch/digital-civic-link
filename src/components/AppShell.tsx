@@ -2,7 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import {
   Home,
   Newspaper,
-  Bot
+  Bot,
   CalendarDays,
   MessagesSquare,
   BarChart3,
@@ -41,13 +41,12 @@ export const MORE_LINKS = [
     title: "أكاديمية القيادة",
     desc: "Leadership courses and lessons",
     icon: GraduationCap,
+  },
   {
     to: "/assistant",
     title: "المساعد الذكي للحزب",
     desc: "معلومات الحزب وخدماته الرسمية",
     icon: Bot,
-  },
-
   },
 ] as const;
 
