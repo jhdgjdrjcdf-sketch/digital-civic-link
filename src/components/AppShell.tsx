@@ -49,6 +49,12 @@ export const MORE_LINKS = [
     desc: "معلومات الحزب وخدماته الرسمية",
     icon: Bot,
   },
+  {
+    to: "/forum",
+    title: "المنتدى الفكري والثقافي",
+    desc: "ناقش الأفكار وتبادل المعرفة مع الأعضاء",
+    icon: MessageSquareText,
+  },
 ] as const;
 
 export function useOnlineStatus() {
