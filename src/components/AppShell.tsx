@@ -5,7 +5,7 @@ import {
   Bot,
   CalendarDays,
   MessagesSquare,
-  MessageSquareText
+  MessageSquareText,
   BarChart3,
   MapPin,
   GraduationCap,
