@@ -45,6 +45,13 @@ const QUICK_LINKS = [
   { to: "/polls", label: "Polls", sub: "Consultations", icon: BarChart3 },
   { to: "/offices", label: "مكاتب التجمع والمرشحين", sub: "Offices & candidates", icon: MapPin },
   { to: "/academy", label: "أكاديمية القيادة", sub: "Leadership academy", icon: GraduationCap },
+  {
+    to: "/assistant",
+    label: "المساعد الذكي",
+    sub: "اسأل عن الحزب",
+    icon: Bot,
+  },
+
 ] as const;
 
 function useHomeData() {
