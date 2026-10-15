@@ -1,4 +1,3 @@
-cat > src/integrations/supabase/client.server.ts <<'EOF'
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./types";
 
