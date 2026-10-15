@@ -12,7 +12,8 @@ import {
   Megaphone,
 } from "lucide-react";
 
-import heroImage from "@/assets/hero.jpg";
+import heroImage from "@/assets/hero-new.jpg"; 
+
 import { AppShell } from "@/components/AppShell";
 import { EmptyState, ErrorState, LoadingList, SectionTitle } from "@/components/States";
 import { Badge } from "@/components/ui/badge";
