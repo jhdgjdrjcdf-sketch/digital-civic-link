@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
   BarChart3,
+  Bot
   CalendarDays,
   GraduationCap,
   MessagesSquare,
