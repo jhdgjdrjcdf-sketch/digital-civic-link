@@ -971,6 +971,7 @@ export type Database = {
           created_at: string
           cv_summary: string
           display_order: number
+          district: string
           education: string[]
           email: string | null
           experience: string[]
@@ -993,6 +994,7 @@ export type Database = {
           created_at?: string
           cv_summary?: string
           display_order?: number
+          district?: string
           education?: string[]
           email?: string | null
           experience?: string[]
@@ -1015,6 +1017,7 @@ export type Database = {
           created_at?: string
           cv_summary?: string
           display_order?: number
+          district?: string
           education?: string[]
           email?: string | null
           experience?: string[]
@@ -1097,6 +1100,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           description: string
+          district: string
           email: string | null
           governorate: string
           id: string
@@ -1106,8 +1110,10 @@ export type Database = {
           longitude: number
           name: string
           phone: string | null
+          services: string[]
           updated_at: string
           whatsapp: string | null
+          working_hours: string
         }
         Insert: {
           address?: string
@@ -1117,6 +1123,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string
+          district?: string
           email?: string | null
           governorate?: string
           id?: string
@@ -1126,8 +1133,10 @@ export type Database = {
           longitude: number
           name: string
           phone?: string | null
+          services?: string[]
           updated_at?: string
           whatsapp?: string | null
+          working_hours?: string
         }
         Update: {
           address?: string
@@ -1137,6 +1146,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string
+          district?: string
           email?: string | null
           governorate?: string
           id?: string
@@ -1146,8 +1156,10 @@ export type Database = {
           longitude?: number
           name?: string
           phone?: string | null
+          services?: string[]
           updated_at?: string
           whatsapp?: string | null
+          working_hours?: string
         }
         Relationships: []
       }
