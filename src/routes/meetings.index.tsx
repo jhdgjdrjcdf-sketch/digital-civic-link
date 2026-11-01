@@ -167,7 +167,10 @@ function CreateMeeting() {
       className="card-soft mb-5 space-y-3 p-4"
       onSubmit={(e) => {
         e.preventDefault();
-        if (title.trim().length < 3) return toast.error("Title must be at least 3 characters");
+        if (title.trim().length < 3) {
+          toast.error("Title must be at least 3 characters");
+          return;
+        }
         create.mutate();
       }}
     >
