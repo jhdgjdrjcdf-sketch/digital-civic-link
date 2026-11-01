@@ -78,11 +78,17 @@ export function AppShell({
   title,
   arabicTitle,
   subtitle,
+  themeClassName,
+  wide,
 }: {
   children: ReactNode;
   title?: string;
   arabicTitle?: string;
   subtitle?: string;
+  /** Optional scoped theme class applied to this page only. */
+  themeClassName?: string;
+  /** Allow a wider desktop layout (used by split map views). */
+  wide?: boolean;
 }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { data: session } = useSession();
@@ -90,8 +96,13 @@ export function AppShell({
   const online = useOnlineStatus();
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="mx-auto flex min-h-screen w-full max-w-2xl flex-col border-border bg-background sm:border-x">
+    <div className={cn("min-h-screen bg-background", themeClassName)}>
+      <div
+        className={cn(
+          "mx-auto flex min-h-screen w-full max-w-2xl flex-col border-border bg-background sm:border-x",
+          wide && "lg:max-w-7xl",
+        )}
+      >
         <header className="surface-navy sticky top-0 z-30 px-5 pt-5 pb-4">
           <div className="flex items-start justify-between gap-3">
             <div>
