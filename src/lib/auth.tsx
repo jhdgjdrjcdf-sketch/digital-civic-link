@@ -101,7 +101,7 @@ export function friendlyError(error: unknown): string {
     if (value instanceof Error) return value.message;
     if (typeof value === "object") {
       const obj = value as Record<string, unknown>;
-      const candidates = [obj.message, obj.details, obj.hint, obj.error, obj.code];
+      const candidates = [obj["message"], obj["details"], obj["hint"], obj["error"], obj["code"]];
       for (const candidate of candidates) {
         const text = normalize(candidate);
         if (text) return text;
