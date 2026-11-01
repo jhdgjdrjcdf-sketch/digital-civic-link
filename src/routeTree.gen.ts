@@ -12,9 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CouncilRouteImport } from './routes/council'
 import { Route as EventsRouteImport } from './routes/events'
+import { Route as ForumRouteImport } from './routes/forum'
 import { Route as MoreRouteImport } from './routes/more'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as OfficesRouteImport } from './routes/offices'
@@ -46,6 +48,11 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AssistantRoute = AssistantRouteImport.update({
+  id: '/assistant',
+  path: '/assistant',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -59,6 +66,11 @@ const CouncilRoute = CouncilRouteImport.update({
 const EventsRoute = EventsRouteImport.update({
   id: '/events',
   path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForumRoute = ForumRouteImport.update({
+  id: '/forum',
+  path: '/forum',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MoreRoute = MoreRouteImport.update({
@@ -142,9 +154,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/admin': typeof AdminRoute
+  '/assistant': typeof AssistantRoute
   '/auth': typeof AuthRoute
   '/council': typeof CouncilRoute
   '/events': typeof EventsRouteWithChildren
+  '/forum': typeof ForumRoute
   '/more': typeof MoreRoute
   '/news': typeof NewsRouteWithChildren
   '/offices': typeof OfficesRoute
@@ -165,9 +179,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/admin': typeof AdminRoute
+  '/assistant': typeof AssistantRoute
   '/auth': typeof AuthRoute
   '/council': typeof CouncilRoute
   '/events': typeof EventsRouteWithChildren
+  '/forum': typeof ForumRoute
   '/more': typeof MoreRoute
   '/news': typeof NewsRouteWithChildren
   '/offices': typeof OfficesRoute
@@ -189,9 +205,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/admin': typeof AdminRoute
+  '/assistant': typeof AssistantRoute
   '/auth': typeof AuthRoute
   '/council': typeof CouncilRoute
   '/events': typeof EventsRouteWithChildren
+  '/forum': typeof ForumRoute
   '/more': typeof MoreRoute
   '/news': typeof NewsRouteWithChildren
   '/offices': typeof OfficesRoute
@@ -214,9 +232,11 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/admin'
+    | '/assistant'
     | '/auth'
     | '/council'
     | '/events'
+    | '/forum'
     | '/more'
     | '/news'
     | '/offices'
@@ -237,9 +257,11 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/admin'
+    | '/assistant'
     | '/auth'
     | '/council'
     | '/events'
+    | '/forum'
     | '/more'
     | '/news'
     | '/offices'
@@ -260,9 +282,11 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/admin'
+    | '/assistant'
     | '/auth'
     | '/council'
     | '/events'
+    | '/forum'
     | '/more'
     | '/news'
     | '/offices'
@@ -284,9 +308,11 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRoute
   AdminRoute: typeof AdminRoute
+  AssistantRoute: typeof AssistantRoute
   AuthRoute: typeof AuthRoute
   CouncilRoute: typeof CouncilRoute
   EventsRoute: typeof EventsRouteWithChildren
+  ForumRoute: typeof ForumRoute
   MoreRoute: typeof MoreRoute
   NewsRoute: typeof NewsRouteWithChildren
   OfficesRoute: typeof OfficesRoute
@@ -325,6 +351,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/assistant': {
+      id: '/assistant'
+      path: '/assistant'
+      fullPath: '/assistant'
+      preLoaderRoute: typeof AssistantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -344,6 +377,13 @@ declare module '@tanstack/react-router' {
       path: '/events'
       fullPath: '/events'
       preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forum': {
+      id: '/forum'
+      path: '/forum'
+      fullPath: '/forum'
+      preLoaderRoute: typeof ForumRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/more': {
@@ -479,9 +519,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
   AdminRoute: AdminRoute,
+  AssistantRoute: AssistantRoute,
   AuthRoute: AuthRoute,
   CouncilRoute: CouncilRoute,
   EventsRoute: EventsRouteWithChildren,
+  ForumRoute: ForumRoute,
   MoreRoute: MoreRoute,
   NewsRoute: NewsRouteWithChildren,
   OfficesRoute: OfficesRoute,
