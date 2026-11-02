@@ -226,6 +226,7 @@ function DirectoryPage() {
   const [view, setView] = useState<"map" | "list">("map");
   const [sheetOpen, setSheetOpen] = useState(false);
   const wantNearest = useRef(false);
+  const govListRef = useRef<HTMLDivElement | null>(null);
 
   const data = query.data;
   const officeById = useMemo(() => new Map((data?.offices ?? []).map((o) => [o.id, o])), [data]);
@@ -573,12 +574,44 @@ function DirectoryPage() {
                       candidate={selectedCandidate}
                       parentOffice={selectedCandidate ? officeById.get(selectedCandidate.office_id) ?? null : null}
                       distance={nearestDistance}
+                      candidateCount={selectedOffice ? govCandidates.length : 0}
+                      onCandidates={() =>
+                        govListRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+                      }
                       onOpen={() => setSheetOpen(true)}
                       onClose={() => setSelected(null)}
                     />
                   </div>
                 ) : null}
               </div>
+
+              {/* Governorate candidates under the map (phones) */}
+              {data && activeGov ? (
+                <div ref={govListRef} className="mt-4 scroll-mt-40 space-y-2.5 lg:hidden">
+                  <h2 className="flex items-center gap-2 text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                    <span className="gold-rule w-4" />
+                    <span className="text-arabic normal-case">
+                      Candidates in {governorateLabel(activeGov)} ({govCandidates.length})
+                    </span>
+                  </h2>
+                  {govCandidates.length ? (
+                    <ul className="space-y-2.5">
+                      {govCandidates.map((c) => (
+                        <li key={c.id}>
+                          <CandidateCard
+                            candidate={c}
+                            office={officeById.get(c.office_id) ?? null}
+                            active={selected === `c:${c.id}`}
+                            onClick={() => openCandidate(c.id)}
+                          />
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">No candidates published for this governorate yet.</p>
+                  )}
+                </div>
+              ) : null}
             </section>
           </div>
         )}
