@@ -732,6 +732,8 @@ function PeekCard({
   candidate,
   parentOffice,
   distance,
+  candidateCount,
+  onCandidates,
   onOpen,
   onClose,
 }: {
@@ -739,6 +741,8 @@ function PeekCard({
   candidate: Candidate | null;
   parentOffice: Office | null;
   distance: number | null;
+  candidateCount: number;
+  onCandidates: () => void;
   onOpen: () => void;
   onClose: () => void;
 }) {
@@ -838,12 +842,14 @@ function OfficeDetail({
   office,
   distance,
   candidates,
+  officeById,
   officials,
   onCandidate,
 }: {
   office: Office;
   distance: number | null;
   candidates: Candidate[];
+  officeById: Map<string, Office>;
   officials: Official[];
   onCandidate: (id: string) => void;
 }) {
@@ -924,17 +930,22 @@ function OfficeDetail({
         )}
       </Section>
 
-      <Section title={`Candidates (${candidates.length})`}>
+      <Section title={`Candidates in ${governorateLabel(office.governorate)} (${candidates.length})`}>
         {candidates.length ? (
           <ul className="space-y-2">
             {candidates.map((c) => (
               <li key={c.id}>
-                <CandidateCard candidate={c} office={office} active={false} onClick={() => onCandidate(c.id)} />
+                <CandidateCard
+                  candidate={c}
+                  office={officeById.get(c.office_id) ?? office}
+                  active={false}
+                  onClick={() => onCandidate(c.id)}
+                />
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-xs text-muted-foreground">No candidates linked to this office yet.</p>
+          <p className="text-xs text-muted-foreground">No candidates published for this governorate yet.</p>
         )}
       </Section>
 
