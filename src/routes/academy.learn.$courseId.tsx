@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { AppShell } from "@/components/AppShell";
+import { useAcademyFileUrl } from "@/components/CourseCover";
 import { LearnExtras } from "@/components/LearnExtras";
 import { EmptyState, ErrorState, LoadingList } from "@/components/States";
 import { Button } from "@/components/ui/button";
