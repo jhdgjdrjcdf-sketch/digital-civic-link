@@ -130,7 +130,7 @@ export function OfficesMap({ pins, userPosition, selectedId, onSelect, className
         scrollWheelZoom: true,
         attributionControl: true,
       });
-      L.control.zoom({ position: "bottomright" }).addTo(map);
+      L.control.zoom({ position: "topright" }).addTo(map);
       L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
         attribution: "&copy; OpenStreetMap contributors",
