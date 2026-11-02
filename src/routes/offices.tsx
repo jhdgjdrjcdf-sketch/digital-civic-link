@@ -330,9 +330,28 @@ function DirectoryPage() {
     ? data?.candidates.find((c) => c.id === selected.slice(2)) ?? null
     : null;
 
+  // Governorate whose candidates are listed: the selected office's, or the
+  // selected candidate's office governorate, or the governorate filter.
+  const activeGov =
+    selectedOffice?.governorate ??
+    (selectedCandidate ? officeById.get(selectedCandidate.office_id)?.governorate : undefined) ??
+    governorate;
+  const govCandidates = useMemo(
+    () =>
+      !data || !activeGov
+        ? []
+        : data.candidates.filter((c) => officeById.get(c.office_id)?.governorate === activeGov),
+    [data, activeGov, officeById],
+  );
+
   const pick = (id: string) => {
     setSelected(id);
     setView("map");
+  };
+
+  const openCandidate = (id: string) => {
+    setSelected(`c:${id}`);
+    setSheetOpen(true);
   };
 
   const nearestDistance =
@@ -345,7 +364,8 @@ function DirectoryPage() {
       <OfficeDetail
         office={selectedOffice}
         distance={nearestDistance}
-        candidates={data.candidates.filter((c) => c.office_id === selectedOffice.id)}
+        candidates={govCandidates}
+        officeById={officeById}
         officials={data.officials.filter((f) => f.office_id === selectedOffice.id)}
         onCandidate={(id) => setSelected(`c:${id}`)}
       />
