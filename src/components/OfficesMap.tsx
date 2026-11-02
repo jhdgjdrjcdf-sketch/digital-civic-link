@@ -46,6 +46,8 @@ export function OfficesMap({ pins, userPosition, selectedId, onSelect, className
     const map = mapRef.current;
     const layer = layerRef.current;
     if (!L || !map || !layer) return;
+    const el = containerRef.current;
+    if (!el || el.clientWidth === 0 || el.clientHeight === 0) return;
     layer.clearLayers();
     const { pins: list, selectedId: sel } = state.current;
 
