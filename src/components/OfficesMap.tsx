@@ -46,6 +46,8 @@ export function OfficesMap({ pins, userPosition, selectedId, onSelect, className
     const map = mapRef.current;
     const layer = layerRef.current;
     if (!L || !map || !layer) return;
+    const el = containerRef.current;
+    if (!el || el.clientWidth === 0 || el.clientHeight === 0) return;
     layer.clearLayers();
     const { pins: list, selectedId: sel } = state.current;
 
@@ -130,7 +132,7 @@ export function OfficesMap({ pins, userPosition, selectedId, onSelect, className
         scrollWheelZoom: true,
         attributionControl: true,
       });
-      L.control.zoom({ position: "bottomright" }).addTo(map);
+      L.control.zoom({ position: "topright" }).addTo(map);
       L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
         attribution: "&copy; OpenStreetMap contributors",
@@ -144,7 +146,18 @@ export function OfficesMap({ pins, userPosition, selectedId, onSelect, className
     })();
     const ro =
       typeof ResizeObserver !== "undefined" && containerRef.current
-        ? new ResizeObserver(() => mapRef.current?.invalidateSize())
+        ? new ResizeObserver(() => {
+            const map = mapRef.current;
+            if (!map || !isVisible()) return;
+            map.invalidateSize();
+            if (pendingRef.current) {
+              const kind = pendingRef.current;
+              pendingRef.current = null;
+              if (kind === "fit") fitAll();
+              else focusSelected();
+            }
+            render();
+          })
         : null;
     if (ro && containerRef.current) ro.observe(containerRef.current);
     return () => {
@@ -159,29 +172,57 @@ export function OfficesMap({ pins, userPosition, selectedId, onSelect, className
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // A hidden map (e.g. list tab on phones) has zero size; Leaflet computes NaN
+  // positions then, so camera moves are deferred until it becomes visible.
+  const pendingRef = useRef<"fit" | "select" | null>(null);
+  const isVisible = () => {
+    const el = containerRef.current;
+    return Boolean(el && el.clientWidth > 0 && el.clientHeight > 0);
+  };
+  const userRef = useRef(userPosition);
+  userRef.current = userPosition;
+
+  const fitAll = () => {
+    const L = LRef.current;
+    const map = mapRef.current;
+    if (!L || !map) return;
+    if (!isVisible()) {
+      pendingRef.current = "fit";
+      return;
+    }
+    const pts: [number, number][] = state.current.pins.map((p) => [p.lat, p.lng]);
+    const u = userRef.current;
+    if (u) pts.push([u.lat, u.lng]);
+    if (pts.length > 1) map.flyToBounds(L.latLngBounds(pts).pad(0.25), { duration: 0.6, maxZoom: 13 });
+    else if (pts.length === 1) map.flyTo(pts[0]!, 13, { duration: 0.6 });
+  };
+
+  const focusSelected = () => {
+    const map = mapRef.current;
+    if (!map) return;
+    const pin = state.current.pins.find((p) => p.id === state.current.selectedId);
+    if (!pin) return;
+    if (!isVisible()) {
+      pendingRef.current = "select";
+      return;
+    }
+    map.flyTo([pin.lat, pin.lng], Math.max(map.getZoom(), 14), { duration: 0.6 });
+  };
+
   // Fit to the visible pins whenever the set of pins changes.
   const pinKey = pins.map((p) => p.id).join(",");
   useEffect(() => {
-    const L = LRef.current;
-    const map = mapRef.current;
-    if (!ready || !L || !map) return;
-    const pts: [number, number][] = pins.map((p) => [p.lat, p.lng]);
-    if (userPosition) pts.push([userPosition.lat, userPosition.lng]);
-    if (!state.current.selectedId) {
-      if (pts.length > 1) map.flyToBounds(L.latLngBounds(pts).pad(0.25), { duration: 0.6, maxZoom: 13 });
-      else if (pts.length === 1) map.flyTo(pts[0]!, 13, { duration: 0.6 });
-    }
-    render();
+    if (!ready || !mapRef.current) return;
+    if (!state.current.selectedId) fitAll();
+    if (isVisible()) render();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pinKey, ready, userPosition]);
 
   // Re-render markers and focus the selection.
   useEffect(() => {
-    const map = mapRef.current;
-    if (!ready || !map) return;
-    render();
-    const pin = pins.find((p) => p.id === selectedId);
-    if (pin) map.flyTo([pin.lat, pin.lng], Math.max(map.getZoom(), 14), { duration: 0.6 });
+    if (!ready || !mapRef.current) return;
+    if (isVisible()) render();
+    focusSelected();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedId, ready]);
 
