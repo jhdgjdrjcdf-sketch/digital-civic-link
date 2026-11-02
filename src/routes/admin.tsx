@@ -245,6 +245,8 @@ function SectionManager({ section }: { section: Section }) {
   return (
     <div className="space-y-3">
       <Button className="w-full" onClick={() => setEditing("new")}><Plus className="size-4" /> Add new</Button>
+{section.id === "courses" && <AcademyContentManager />}
+
       {query.isPending ? (
         <LoadingList rows={3} />
       ) : query.isError ? (
