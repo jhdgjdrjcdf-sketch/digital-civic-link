@@ -782,6 +782,11 @@ function PeekCard({
           </Button>
         ) : null}
       </div>
+      {office ? (
+        <Button size="sm" variant="secondary" onClick={onCandidates} className="mt-2 w-full rounded-xl">
+          <Users className="size-4" /> Candidates in this governorate ({candidateCount})
+        </Button>
+      ) : null}
     </div>
   );
 }
