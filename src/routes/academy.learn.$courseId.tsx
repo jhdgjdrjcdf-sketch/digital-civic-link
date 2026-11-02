@@ -62,9 +62,19 @@ const video = useAcademyFileUrl(current?.video_url);
           {current ? (
             <article className="card-soft space-y-3 p-4">
               <h2 className="text-lg font-bold">{current.title}</h2>
-              {current.video_url ? (
-                <video src={current.video_url} controls className="w-full rounded-lg" />
-              ) : null}
+              {video.data ? (
+  <video
+    src={video.data}
+    controls
+    playsInline
+    preload="metadata"
+    className="w-full rounded-xl bg-black"
+  />
+) : current.video_url ? (
+  <p className="text-sm text-muted-foreground">
+    جارٍ تحميل الفيديو...
+  </p>
+) : null}
               <p className="text-sm whitespace-pre-line">{current.content}</p>
               <Button
                 className="w-full"
