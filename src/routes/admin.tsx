@@ -18,6 +18,7 @@ import { type AppRole, friendlyError, useRoles } from "@/lib/auth";
 import { NEWS_CATEGORIES_ADMIN } from "@/lib/admin-config";
 import { uploadOfficeImage, useSignedUrl } from "@/lib/storage";
 import { IRAQ_GOVERNORATES } from "@/lib/governorates";
+import { AcademyContentManager } from "@/components/AcademyContentManager";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
