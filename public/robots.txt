@@ -12,3 +12,5 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://digital-civic-link.lovable.app/sitemap.xml
