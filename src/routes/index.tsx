@@ -1,4 +1,3 @@
-
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -18,6 +17,8 @@ import {
 
 import heroImage from "@/assets/hero-new.jpg";
 import "@/Styles.css";
+import "@/styles/home-glass.css";
+
 import { AppShell } from "@/components/AppShell";
 import {
   EmptyState,
@@ -201,7 +202,6 @@ function HomePage() {
   return (
     <AppShell>
       <main className="home-glass" dir="rtl">
-        {/* Hero */}
         <section className="home-hero">
           <img
             src={heroImage}
@@ -253,7 +253,6 @@ function HomePage() {
           </div>
         </section>
 
-        {/* Quick access */}
         <section className="home-section">
           <SectionHeading
             eyebrow="EXPLORE THE PLATFORM"
@@ -272,6 +271,7 @@ function HomePage() {
                   <span className="home-card-number">
                     {item.number}
                   </span>
+
                   <span className="home-icon-wrap">
                     <item.icon size={21} strokeWidth={1.8} />
                   </span>
@@ -290,7 +290,6 @@ function HomePage() {
           </div>
         </section>
 
-        {/* Latest news */}
         <section className="home-section">
           <SectionHeading
             eyebrow="LATEST UPDATES"
@@ -322,6 +321,7 @@ function HomePage() {
                   <Badge variant="secondary">
                     {lead.category || "أخبار التجمع"}
                   </Badge>
+
                   <span className="home-featured-tag">
                     <Megaphone size={14} />
                     الخبر الأبرز
@@ -365,6 +365,7 @@ function HomePage() {
                         <span className="home-news-category">
                           {item.category || "أخبار"}
                         </span>
+
                         <h3>{item.title}</h3>
                         <p>{formatDate(item.published_at)}</p>
                       </div>
@@ -381,7 +382,6 @@ function HomePage() {
           )}
         </section>
 
-        {/* Events */}
         <section className="home-section">
           <SectionHeading
             eyebrow="UPCOMING ACTIVITIES"
@@ -436,7 +436,6 @@ function HomePage() {
           )}
         </section>
 
-        {/* Poll */}
         {openPoll && (
           <section className="home-section">
             <SectionHeading
@@ -446,7 +445,10 @@ function HomePage() {
               to="/polls"
             />
 
-            <Link to="/polls" className="home-glass-card home-poll-card">
+            <Link
+              to="/polls"
+              className="home-glass-card home-poll-card"
+            >
               <div className="home-poll-icon">
                 <BarChart3 size={24} />
               </div>
@@ -466,7 +468,6 @@ function HomePage() {
           </section>
         )}
 
-        {/* Mission */}
         <section className="home-mission">
           <div className="home-mission-decoration">
             <Users size={86} strokeWidth={0.8} />
@@ -475,11 +476,13 @@ function HomePage() {
           <div className="home-mission-content">
             <span className="home-eyebrow">OUR PRINCIPLES</span>
             <h2>رسالتنا</h2>
+
             <p>
               نؤمن بأن الثقة العامة تُبنى بالصدق والخدمة والشفافية،
               وأن المشاركة الواعية والمعرفة أساس مجتمع أكثر قوة
               وتماسكاً.
             </p>
+
             <span className="home-mission-slogan">
               ثورة فكر · ثورة تصحيح
             </span>
