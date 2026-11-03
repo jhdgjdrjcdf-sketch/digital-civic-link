@@ -7,20 +7,49 @@ import { EmptyState, ErrorState, LoadingList } from "@/components/States";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDate, paragraphs } from "@/lib/format";
+import { clip, loadNewsMeta, pageUrl } from "@/lib/page-meta";
 import { categoryLabel } from "@/routes/news";
 
 export const Route = createFileRoute("/news/$newsId")({
   staticData: { sitemap: true },
-  head: () => ({
-    meta: [
-      { title: "Article — صوت التجمع" },
-      { name: "description", content: "Read a full announcement from تجمع الفاو زاخو." },
-      { property: "og:title", content: "Article — صوت التجمع" },
-      { property: "og:description", content: "Read a full announcement from تجمع الفاو زاخو." },
-      { property: "og:type", content: "article" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  loader: ({ params }) => loadNewsMeta(params.newsId),
+  head: ({ params, loaderData }) => {
+    const url = pageUrl(`/news/${params.newsId}`);
+    const title = loaderData?.title
+      ? `${clip(loaderData.title, 70)} — صوت التجمع`
+      : "Article — صوت التجمع";
+    const description =
+      clip(loaderData?.summary) || "Read a full announcement from تجمع الفاو زاخو.";
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "article" },
+        { property: "og:url", content: url },
+        { name: "twitter:card", content: "summary_large_image" },
+        ...(loaderData ? [] : [{ name: "robots", content: "noindex" }]),
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: loaderData
+        ? [
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "NewsArticle",
+                headline: loaderData.title,
+                description: loaderData.summary ?? undefined,
+                datePublished: loaderData.published_at ?? undefined,
+                mainEntityOfPage: url,
+                publisher: { "@type": "Organization", name: "تجمع الفاو زاخو" },
+              }),
+            },
+          ]
+        : [],
+    };
+  },
   component: ArticlePage,
 });
 

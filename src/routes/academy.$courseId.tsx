@@ -15,19 +15,49 @@ import {
   useCourse,
   useCourseProgress,
 } from "@/lib/academy";
+import { clip, loadCourseMeta, pageUrl } from "@/lib/page-meta";
 
 export const Route = createFileRoute("/academy/$courseId")({
   staticData: { sitemap: true },
-  head: () => ({
-    meta: [
-      { title: "Course — أكاديمية القيادة" },
-      { name: "description", content: "Course outline, instructor, lessons and enrolment." },
-      { property: "og:title", content: "Course — أكاديمية القيادة" },
-      { property: "og:description", content: "Course outline, instructor, lessons and enrolment." },
-      { property: "og:type", content: "article" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  loader: ({ params }) => loadCourseMeta(params.courseId),
+  head: ({ params, loaderData }) => {
+    const url = pageUrl(`/academy/${params.courseId}`);
+    const title = loaderData?.title
+      ? `${clip(loaderData.title, 70)} — أكاديمية القيادة`
+      : "Course — أكاديمية القيادة";
+    const description =
+      clip(loaderData?.description) || "Course outline, instructor, lessons and enrolment.";
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "article" },
+        { property: "og:url", content: url },
+        { name: "twitter:card", content: "summary_large_image" },
+        ...(loaderData ? [] : [{ name: "robots", content: "noindex" }]),
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: loaderData
+        ? [
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Course",
+                name: loaderData.title,
+                description: clip(loaderData.description, 300) || loaderData.title,
+                provider: { "@type": "Organization", name: "تجمع الفاو زاخو — أكاديمية القيادة" },
+                ...(loaderData.instructor_name
+                  ? { instructor: { "@type": "Person", name: loaderData.instructor_name } }
+                  : {}),
+              }),
+            },
+          ]
+        : [],
+    };
+  },
   component: CourseDetailPage,
 });
 

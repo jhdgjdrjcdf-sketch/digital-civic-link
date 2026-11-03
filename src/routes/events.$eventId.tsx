@@ -8,19 +8,65 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDateTime, paragraphs, relativeDays } from "@/lib/format";
+import { clip, loadEventMeta, pageUrl } from "@/lib/page-meta";
 
 export const Route = createFileRoute("/events/$eventId")({
   staticData: { sitemap: true },
-  head: () => ({
-    meta: [
-      { title: "Event details — تجمع الفاو زاخو" },
-      { name: "description", content: "Full details, time and location of a party activity." },
-      { property: "og:title", content: "Event details — تجمع الفاو زاخو" },
-      { property: "og:description", content: "Time, location and details of a party activity." },
-      { property: "og:type", content: "article" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  loader: ({ params }) => loadEventMeta(params.eventId),
+  head: ({ params, loaderData }) => {
+    const url = pageUrl(`/events/${params.eventId}`);
+    const title = loaderData?.title
+      ? `${clip(loaderData.title, 70)} — تجمع الفاو زاخو`
+      : "Event details — تجمع الفاو زاخو";
+    const when = loaderData?.starts_at
+      ? new Date(loaderData.starts_at).toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+          timeZone: "UTC",
+        })
+      : "";
+    const description = loaderData
+      ? clip(
+          [when, loaderData.location, loaderData.description].filter(Boolean).join(" · "),
+        )
+      : "Full details, time and location of a party activity.";
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "article" },
+        { property: "og:url", content: url },
+        { name: "twitter:card", content: "summary_large_image" },
+        ...(loaderData ? [] : [{ name: "robots", content: "noindex" }]),
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: loaderData
+        ? [
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Event",
+                name: loaderData.title,
+                description: clip(loaderData.description, 300) || undefined,
+                startDate: loaderData.starts_at,
+                endDate: loaderData.ends_at ?? undefined,
+                eventStatus:
+                  loaderData.status === "cancelled"
+                    ? "https://schema.org/EventCancelled"
+                    : "https://schema.org/EventScheduled",
+                eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+                location: { "@type": "Place", name: loaderData.location, address: loaderData.location },
+                organizer: { "@type": "Organization", name: "تجمع الفاو زاخو" },
+              }),
+            },
+          ]
+        : [],
+    };
+  },
   component: EventDetailsPage,
 });
 
