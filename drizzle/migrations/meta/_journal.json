@@ -36,6 +36,13 @@
       "when": 1793493910789,
       "tag": "0004_civic_atlas_directory",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793664463168,
+      "tag": "0005_academy_staff_read_media",
+      "breakpoints": true
     }
   ]
 }
