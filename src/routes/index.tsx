@@ -21,6 +21,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { formatDate, formatDateTime, relativeDays } from "@/lib/format";
 
 export const Route = createFileRoute("/")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "تجمع الفاو زاخو — Official Digital Platform" },

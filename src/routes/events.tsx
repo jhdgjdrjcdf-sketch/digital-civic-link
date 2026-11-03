@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { formatDateTime, relativeDays } from "@/lib/format";
 
 export const Route = createFileRoute("/events")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Events & schedule — تجمع الفاو زاخو" },

@@ -17,6 +17,7 @@ import {
 } from "@/lib/academy";
 
 export const Route = createFileRoute("/academy/$courseId")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Course — أكاديمية القيادة" },

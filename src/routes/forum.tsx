@@ -332,5 +332,6 @@ function ForumPage() {
 }
 
 export const Route = createFileRoute("/forum")({
+  staticData: { sitemap: true },
   component: ForumPage,
 });

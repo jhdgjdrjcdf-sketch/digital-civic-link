@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { formatDate } from "@/lib/format";
 
 export const Route = createFileRoute("/news")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "صوت التجمع — News & statements" },

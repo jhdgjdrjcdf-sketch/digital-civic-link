@@ -13,6 +13,7 @@ import { friendlyError } from "@/lib/auth";
 import { useAcademyActions, useCourse, useCourseProgress } from "@/lib/academy";
 
 export const Route = createFileRoute("/academy/learn/$courseId")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Learning — أكاديمية القيادة" },

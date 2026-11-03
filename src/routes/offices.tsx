@@ -39,6 +39,7 @@ const OfficesMap = lazy(() =>
 );
 
 export const Route = createFileRoute("/offices")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "دليل الفاو زاخو — Offices & Candidates Directory" },

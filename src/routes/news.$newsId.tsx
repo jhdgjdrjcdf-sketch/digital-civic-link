@@ -10,6 +10,7 @@ import { formatDate, paragraphs } from "@/lib/format";
 import { categoryLabel } from "@/routes/news";
 
 export const Route = createFileRoute("/news/$newsId")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Article — صوت التجمع" },
