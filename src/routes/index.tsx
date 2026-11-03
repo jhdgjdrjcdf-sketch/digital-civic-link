@@ -17,8 +17,7 @@ import {
 } from "lucide-react";
 
 import heroImage from "@/assets/hero-new.jpg";
-import "@/styles/home-glass.css";
-
+import "@/Styles.css";
 import { AppShell } from "@/components/AppShell";
 import {
   EmptyState,
