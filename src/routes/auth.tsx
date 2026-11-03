@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { friendlyError } from "@/lib/auth";
 
 export const Route = createFileRoute("/auth")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Sign in — تجمع الفاو زاخو" },

@@ -5,6 +5,7 @@ import { AppShell, MORE_LINKS } from "@/components/AppShell";
 import { useRoles, useSession } from "@/lib/auth";
 
 export const Route = createFileRoute("/more")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "More sections — تجمع الفاو زاخو" },

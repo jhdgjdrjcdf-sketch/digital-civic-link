@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export const Route = createFileRoute("/academy/verify")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Verify a certificate — أكاديمية القيادة" },

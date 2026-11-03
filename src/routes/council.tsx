@@ -17,6 +17,7 @@ import { friendlyError, useRoles, useSession } from "@/lib/auth";
 import { formatDateTime } from "@/lib/format";
 
 export const Route = createFileRoute("/council")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "مجلس شباب التجمع — Youth Council" },

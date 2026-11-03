@@ -13,6 +13,7 @@ import { friendlyError } from "@/lib/auth";
 import { useAcademyActions, useCourse, useCourseProgress } from "@/lib/academy";
 
 export const Route = createFileRoute("/academy/learn/$courseId")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Learning — أكاديمية القيادة" },
@@ -36,8 +37,8 @@ function LearnPage() {
   const done = new Set(progress.data?.completed_lesson_ids ?? []);
   const [currentId, setCurrentId] = useState<string | null>(null);
   const current =
-const video = useAcademyFileUrl(current?.video_url);
     lessons.find((l) => l.id === (currentId ?? progress.data?.last_lesson_id)) ?? lessons[0];
+  const video = useAcademyFileUrl(current?.video_url);
 
   return (
     <AppShell arabicTitle="أكاديمية القيادة" title={query.data?.course?.title ?? "Learning"}>

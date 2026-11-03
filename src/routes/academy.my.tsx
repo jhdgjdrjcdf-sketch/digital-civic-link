@@ -10,6 +10,7 @@ import { useSession } from "@/lib/auth";
 import { useCertificates, useCourseProgress, useCourses, useEnrollments, type Course } from "@/lib/academy";
 
 export const Route = createFileRoute("/academy/my")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "My courses — أكاديمية القيادة" },

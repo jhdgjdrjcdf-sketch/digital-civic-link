@@ -5,6 +5,7 @@ import { Bot, Send, UserRound } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 
 export const Route = createFileRoute("/assistant")({
+  staticData: { sitemap: true },
   component: AssistantPage,
 });
 

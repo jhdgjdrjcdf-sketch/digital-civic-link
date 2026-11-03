@@ -9,6 +9,7 @@ import { ROLE_LABELS, useRoles, useSession } from "@/lib/auth";
 import { useCertificates, useCourses } from "@/lib/academy";
 
 export const Route = createFileRoute("/account")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Your account — تجمع الفاو زاخو" },

@@ -30,6 +30,7 @@ import { getMeetingToken, meetingAction } from "@/lib/meetings.functions";
 const MeetingStage = lazy(() => import("@/components/MeetingStage"));
 
 export const Route = createFileRoute("/meetings/$meetingId")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Meeting room — الاجتماعات" },

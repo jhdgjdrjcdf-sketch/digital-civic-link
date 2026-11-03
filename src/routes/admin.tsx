@@ -21,6 +21,7 @@ import { IRAQ_GOVERNORATES } from "@/lib/governorates";
 import { AcademyContentManager } from "@/components/AcademyContentManager";
 
 export const Route = createFileRoute("/admin")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Administration — تجمع الفاو زاخو" },

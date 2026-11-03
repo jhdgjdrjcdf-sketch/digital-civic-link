@@ -21,6 +21,7 @@ import { Route as MoreRouteImport } from './routes/more'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as OfficesRouteImport } from './routes/offices'
 import { Route as PollsRouteImport } from './routes/polls'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AcademyIndexRouteImport } from './routes/academy.index'
 import { Route as AcademyCourseIdRouteImport } from './routes/academy.$courseId'
 import { Route as AcademyInstructorRouteImport } from './routes/academy.instructor'
@@ -93,6 +94,11 @@ const PollsRoute = PollsRouteImport.update({
   path: '/polls',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AcademyIndexRoute = AcademyIndexRouteImport.update({
   id: '/academy/',
   path: '/academy/',
@@ -163,6 +169,7 @@ export interface FileRoutesByFullPath {
   '/news': typeof NewsRouteWithChildren
   '/offices': typeof OfficesRoute
   '/polls': typeof PollsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/academy/$courseId': typeof AcademyCourseIdRoute
   '/academy/instructor': typeof AcademyInstructorRoute
   '/academy/my': typeof AcademyMyRoute
@@ -188,6 +195,7 @@ export interface FileRoutesByTo {
   '/news': typeof NewsRouteWithChildren
   '/offices': typeof OfficesRoute
   '/polls': typeof PollsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/academy/$courseId': typeof AcademyCourseIdRoute
   '/academy/instructor': typeof AcademyInstructorRoute
   '/academy/my': typeof AcademyMyRoute
@@ -214,6 +222,7 @@ export interface FileRoutesById {
   '/news': typeof NewsRouteWithChildren
   '/offices': typeof OfficesRoute
   '/polls': typeof PollsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/academy/$courseId': typeof AcademyCourseIdRoute
   '/academy/instructor': typeof AcademyInstructorRoute
   '/academy/my': typeof AcademyMyRoute
@@ -241,6 +250,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/offices'
     | '/polls'
+    | '/sitemap.xml'
     | '/academy/$courseId'
     | '/academy/instructor'
     | '/academy/my'
@@ -266,6 +276,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/offices'
     | '/polls'
+    | '/sitemap.xml'
     | '/academy/$courseId'
     | '/academy/instructor'
     | '/academy/my'
@@ -291,6 +302,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/offices'
     | '/polls'
+    | '/sitemap.xml'
     | '/academy/$courseId'
     | '/academy/instructor'
     | '/academy/my'
@@ -317,6 +329,7 @@ export interface RootRouteChildren {
   NewsRoute: typeof NewsRouteWithChildren
   OfficesRoute: typeof OfficesRoute
   PollsRoute: typeof PollsRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AcademyCourseIdRoute: typeof AcademyCourseIdRoute
   AcademyInstructorRoute: typeof AcademyInstructorRoute
   AcademyMyRoute: typeof AcademyMyRoute
@@ -412,6 +425,13 @@ declare module '@tanstack/react-router' {
       path: '/polls'
       fullPath: '/polls'
       preLoaderRoute: typeof PollsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/academy/': {
@@ -528,6 +548,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewsRoute: NewsRouteWithChildren,
   OfficesRoute: OfficesRoute,
   PollsRoute: PollsRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   AcademyCourseIdRoute: AcademyCourseIdRoute,
   AcademyInstructorRoute: AcademyInstructorRoute,
   AcademyMyRoute: AcademyMyRoute,

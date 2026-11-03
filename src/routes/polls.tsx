@@ -4,6 +4,7 @@ import { AppShell } from "@/components/AppShell";
 import { PollsList } from "@/components/PollsList";
 
 export const Route = createFileRoute("/polls")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Polls — تجمع الفاو زاخو" },

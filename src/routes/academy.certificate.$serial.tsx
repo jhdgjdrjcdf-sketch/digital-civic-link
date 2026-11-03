@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/academy/certificate/$serial")({
+  staticData: { sitemap: false },
   head: ({ params }) => ({
     meta: [
       { title: `Certificate ${params.serial} — أكاديمية القيادة` },

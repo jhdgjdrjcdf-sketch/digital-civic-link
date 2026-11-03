@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { friendlyError, useRoles } from "@/lib/auth";
 
 export const Route = createFileRoute("/academy/instructor")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Instructor dashboard — أكاديمية القيادة" },
