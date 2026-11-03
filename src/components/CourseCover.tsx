@@ -46,3 +46,13 @@ export async function uploadAcademyFile(courseId: string, folder: "covers" | "le
   if (error) throw error;
   return path;
 }
+
+/** Turns a YouTube or Vimeo page link into an embeddable player URL. */
+export function videoEmbedUrl(url?: string | null): string | null {
+  if (!url) return null;
+  const yt = url.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([\w-]{11})/);
+  if (yt) return `https://www.youtube-nocookie.com/embed/${yt[1]}`;
+  const vm = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if (vm) return `https://player.vimeo.com/video/${vm[1]}`;
+  return null;
+}

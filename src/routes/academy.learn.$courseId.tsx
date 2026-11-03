@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { AppShell } from "@/components/AppShell";
-import { useAcademyFileUrl } from "@/components/CourseCover";
+import { useAcademyFileUrl, videoEmbedUrl } from "@/components/CourseCover";
 import { LearnExtras } from "@/components/LearnExtras";
 import { EmptyState, ErrorState, LoadingList } from "@/components/States";
 import { Button } from "@/components/ui/button";
@@ -38,7 +38,8 @@ function LearnPage() {
   const [currentId, setCurrentId] = useState<string | null>(null);
   const current =
     lessons.find((l) => l.id === (currentId ?? progress.data?.last_lesson_id)) ?? lessons[0];
-  const video = useAcademyFileUrl(current?.video_url);
+  const embed = videoEmbedUrl(current?.video_url);
+  const video = useAcademyFileUrl(embed ? null : current?.video_url);
 
   return (
     <AppShell arabicTitle="أكاديمية القيادة" title={query.data?.course?.title ?? "Learning"}>
@@ -63,7 +64,15 @@ function LearnPage() {
           {current ? (
             <article className="card-soft space-y-3 p-4">
               <h2 className="text-lg font-bold">{current.title}</h2>
-              {video.data ? (
+              {embed ? (
+                <iframe
+                  src={embed}
+                  title={current.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="aspect-video w-full rounded-xl"
+                />
+              ) : video.data ? (
   <video
     src={video.data}
     controls
@@ -73,7 +82,7 @@ function LearnPage() {
   />
 ) : current.video_url ? (
   <p className="text-sm text-muted-foreground">
-    جارٍ تحميل الفيديو...
+    {video.isError ? "This video could not be loaded." : "Loading video…"}
   </p>
 ) : null}
               <p className="text-sm whitespace-pre-line">{current.content}</p>
