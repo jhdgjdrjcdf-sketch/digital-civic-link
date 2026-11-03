@@ -4,6 +4,7 @@ import {
   Newspaper,
   Bot,
   CalendarDays,
+  Users,
   MessagesSquare,
   MessageSquareText,
   BarChart3,
