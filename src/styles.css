@@ -387,7 +387,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .home-glass:not(.light) {
+  :root:not(.light):not(.dark) .home-glass {
     --hg-bg: #081510;
     --hg-surface: rgba(255, 255, 255, 0.055);
     --hg-surface-strong: rgba(255, 255, 255, 0.085);
