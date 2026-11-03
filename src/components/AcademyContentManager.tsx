@@ -309,10 +309,10 @@ export function AcademyContentManager() {
               <Input
                 value={videoUrl}
                 onChange={(e) => setVideoUrl(e.target.value)}
-                placeholder="رابط فيديو مباشر"
+                placeholder="https://www.youtube.com/watch?v=..."
               />
               <p className="text-xs text-muted-foreground">
-                استخدم رابط فيديو مباشر، وليس رابط صفحة YouTube العادية.
+                يمكنك لصق رابط YouTube أو Vimeo أو رابط فيديو مباشر (MP4). مناسب للفيديوهات الأكبر من 50 MB.
               </p>
             </div>
 
