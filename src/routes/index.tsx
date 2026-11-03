@@ -17,7 +17,7 @@ import {
 
 import heroImage from "@/assets/hero-new.jpg";
 import "@/Styles.css";
-import "@/home-glass.css";
+import "@/styles.css";
 
 import { AppShell } from "@/components/AppShell";
 import {
