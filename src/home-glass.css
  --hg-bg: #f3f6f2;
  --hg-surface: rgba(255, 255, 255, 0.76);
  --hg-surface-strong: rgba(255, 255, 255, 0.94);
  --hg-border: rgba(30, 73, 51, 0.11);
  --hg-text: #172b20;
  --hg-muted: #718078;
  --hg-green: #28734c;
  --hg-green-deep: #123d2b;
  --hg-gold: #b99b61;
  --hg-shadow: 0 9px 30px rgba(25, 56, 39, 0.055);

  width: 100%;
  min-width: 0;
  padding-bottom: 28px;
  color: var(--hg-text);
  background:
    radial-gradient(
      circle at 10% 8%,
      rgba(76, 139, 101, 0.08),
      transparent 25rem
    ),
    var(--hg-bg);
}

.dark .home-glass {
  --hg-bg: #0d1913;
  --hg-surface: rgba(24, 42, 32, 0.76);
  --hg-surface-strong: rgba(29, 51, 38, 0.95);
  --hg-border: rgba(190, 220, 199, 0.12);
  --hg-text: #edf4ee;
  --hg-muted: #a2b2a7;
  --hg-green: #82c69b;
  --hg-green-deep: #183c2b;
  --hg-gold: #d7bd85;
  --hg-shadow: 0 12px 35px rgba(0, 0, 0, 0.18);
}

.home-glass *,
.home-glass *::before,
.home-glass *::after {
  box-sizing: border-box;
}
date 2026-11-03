@@ -41,3 +41,8 @@
 .home-glass *::after {
   box-sizing: border-box;
 }
+
+.home-glass {
+  outline: 6px solid red !important;
+  outline-offset: -6px !important;
+}
