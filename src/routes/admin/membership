@@ -1,0 +1,14 @@
+import { createFileRoute } from "@tanstack/react-router";
+import MembershipForm from "@/components/MembershipForm";
+
+export const Route = createFileRoute("/membership")({
+  component: MembershipPage,
+});
+
+function MembershipPage() {
+  return (
+    <main className="min-h-screen">
+      <MembershipForm />
+    </main>
+  );
+}
