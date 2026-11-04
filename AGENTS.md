@@ -11,4 +11,5 @@
 
 ## Rules
 - Every route sets `staticData.sitemap`; `/sitemap.xml` is built from the router plus published news, events and courses, so private pages must set it to false.
+- Admin sections are declared in `src/lib/admin-sections.ts` and rendered by `src/components/admin/*`; `src/routes/admin.tsx` only composes them, so new admin modules are config + component, not route edits.
 - Detail routes load a small public record in `loader` (src/lib/page-meta.ts) so `head()` can emit page-specific titles, canonical and JSON-LD during SSR.
