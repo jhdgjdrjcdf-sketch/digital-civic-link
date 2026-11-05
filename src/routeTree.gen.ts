@@ -17,6 +17,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CouncilRouteImport } from './routes/council'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as ForumRouteImport } from './routes/forum'
+import { Route as MembershipRouteImport } from './routes/membership'
 import { Route as MoreRouteImport } from './routes/more'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as OfficesRouteImport } from './routes/offices'
@@ -27,6 +28,7 @@ import { Route as AcademyCourseIdRouteImport } from './routes/academy.$courseId'
 import { Route as AcademyInstructorRouteImport } from './routes/academy.instructor'
 import { Route as AcademyMyRouteImport } from './routes/academy.my'
 import { Route as AcademyVerifyRouteImport } from './routes/academy.verify'
+import { Route as AdminMembershipRouteImport } from './routes/admin_.membership'
 import { Route as EventsEventIdRouteImport } from './routes/events.$eventId'
 import { Route as MeetingsIndexRouteImport } from './routes/meetings.index'
 import { Route as MeetingsMeetingIdRouteImport } from './routes/meetings.$meetingId'
@@ -72,6 +74,11 @@ const EventsRoute = EventsRouteImport.update({
 const ForumRoute = ForumRouteImport.update({
   id: '/forum',
   path: '/forum',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MembershipRoute = MembershipRouteImport.update({
+  id: '/membership',
+  path: '/membership',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MoreRoute = MoreRouteImport.update({
@@ -124,6 +131,11 @@ const AcademyVerifyRoute = AcademyVerifyRouteImport.update({
   path: '/academy/verify',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminMembershipRoute = AdminMembershipRouteImport.update({
+  id: '/admin_/membership',
+  path: '/admin/membership',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EventsEventIdRoute = EventsEventIdRouteImport.update({
   id: '/$eventId',
   path: '/$eventId',
@@ -165,6 +177,7 @@ export interface FileRoutesByFullPath {
   '/council': typeof CouncilRoute
   '/events': typeof EventsRouteWithChildren
   '/forum': typeof ForumRoute
+  '/membership': typeof MembershipRoute
   '/more': typeof MoreRoute
   '/news': typeof NewsRouteWithChildren
   '/offices': typeof OfficesRoute
@@ -174,6 +187,7 @@ export interface FileRoutesByFullPath {
   '/academy/instructor': typeof AcademyInstructorRoute
   '/academy/my': typeof AcademyMyRoute
   '/academy/verify': typeof AcademyVerifyRoute
+  '/admin/membership': typeof AdminMembershipRoute
   '/events/$eventId': typeof EventsEventIdRoute
   '/meetings/$meetingId': typeof MeetingsMeetingIdRoute
   '/news/$newsId': typeof NewsNewsIdRoute
@@ -191,6 +205,7 @@ export interface FileRoutesByTo {
   '/council': typeof CouncilRoute
   '/events': typeof EventsRouteWithChildren
   '/forum': typeof ForumRoute
+  '/membership': typeof MembershipRoute
   '/more': typeof MoreRoute
   '/news': typeof NewsRouteWithChildren
   '/offices': typeof OfficesRoute
@@ -200,6 +215,7 @@ export interface FileRoutesByTo {
   '/academy/instructor': typeof AcademyInstructorRoute
   '/academy/my': typeof AcademyMyRoute
   '/academy/verify': typeof AcademyVerifyRoute
+  '/admin/membership': typeof AdminMembershipRoute
   '/events/$eventId': typeof EventsEventIdRoute
   '/meetings/$meetingId': typeof MeetingsMeetingIdRoute
   '/news/$newsId': typeof NewsNewsIdRoute
@@ -218,6 +234,7 @@ export interface FileRoutesById {
   '/council': typeof CouncilRoute
   '/events': typeof EventsRouteWithChildren
   '/forum': typeof ForumRoute
+  '/membership': typeof MembershipRoute
   '/more': typeof MoreRoute
   '/news': typeof NewsRouteWithChildren
   '/offices': typeof OfficesRoute
@@ -227,6 +244,7 @@ export interface FileRoutesById {
   '/academy/instructor': typeof AcademyInstructorRoute
   '/academy/my': typeof AcademyMyRoute
   '/academy/verify': typeof AcademyVerifyRoute
+  '/admin_/membership': typeof AdminMembershipRoute
   '/events/$eventId': typeof EventsEventIdRoute
   '/meetings/$meetingId': typeof MeetingsMeetingIdRoute
   '/news/$newsId': typeof NewsNewsIdRoute
@@ -246,6 +264,7 @@ export interface FileRouteTypes {
     | '/council'
     | '/events'
     | '/forum'
+    | '/membership'
     | '/more'
     | '/news'
     | '/offices'
@@ -255,6 +274,7 @@ export interface FileRouteTypes {
     | '/academy/instructor'
     | '/academy/my'
     | '/academy/verify'
+    | '/admin/membership'
     | '/events/$eventId'
     | '/meetings/$meetingId'
     | '/news/$newsId'
@@ -272,6 +292,7 @@ export interface FileRouteTypes {
     | '/council'
     | '/events'
     | '/forum'
+    | '/membership'
     | '/more'
     | '/news'
     | '/offices'
@@ -281,6 +302,7 @@ export interface FileRouteTypes {
     | '/academy/instructor'
     | '/academy/my'
     | '/academy/verify'
+    | '/admin/membership'
     | '/events/$eventId'
     | '/meetings/$meetingId'
     | '/news/$newsId'
@@ -298,6 +320,7 @@ export interface FileRouteTypes {
     | '/council'
     | '/events'
     | '/forum'
+    | '/membership'
     | '/more'
     | '/news'
     | '/offices'
@@ -307,6 +330,7 @@ export interface FileRouteTypes {
     | '/academy/instructor'
     | '/academy/my'
     | '/academy/verify'
+    | '/admin_/membership'
     | '/events/$eventId'
     | '/meetings/$meetingId'
     | '/news/$newsId'
@@ -325,6 +349,7 @@ export interface RootRouteChildren {
   CouncilRoute: typeof CouncilRoute
   EventsRoute: typeof EventsRouteWithChildren
   ForumRoute: typeof ForumRoute
+  MembershipRoute: typeof MembershipRoute
   MoreRoute: typeof MoreRoute
   NewsRoute: typeof NewsRouteWithChildren
   OfficesRoute: typeof OfficesRoute
@@ -334,6 +359,7 @@ export interface RootRouteChildren {
   AcademyInstructorRoute: typeof AcademyInstructorRoute
   AcademyMyRoute: typeof AcademyMyRoute
   AcademyVerifyRoute: typeof AcademyVerifyRoute
+  AdminMembershipRoute: typeof AdminMembershipRoute
   MeetingsMeetingIdRoute: typeof MeetingsMeetingIdRoute
   AcademyIndexRoute: typeof AcademyIndexRoute
   MeetingsIndexRoute: typeof MeetingsIndexRoute
@@ -397,6 +423,13 @@ declare module '@tanstack/react-router' {
       path: '/forum'
       fullPath: '/forum'
       preLoaderRoute: typeof ForumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/membership': {
+      id: '/membership'
+      path: '/membership'
+      fullPath: '/membership'
+      preLoaderRoute: typeof MembershipRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/more': {
@@ -467,6 +500,13 @@ declare module '@tanstack/react-router' {
       path: '/academy/verify'
       fullPath: '/academy/verify'
       preLoaderRoute: typeof AcademyVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin_/membership': {
+      id: '/admin_/membership'
+      path: '/admin/membership'
+      fullPath: '/admin/membership'
+      preLoaderRoute: typeof AdminMembershipRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/events/$eventId': {
@@ -544,6 +584,7 @@ const rootRouteChildren: RootRouteChildren = {
   CouncilRoute: CouncilRoute,
   EventsRoute: EventsRouteWithChildren,
   ForumRoute: ForumRoute,
+  MembershipRoute: MembershipRoute,
   MoreRoute: MoreRoute,
   NewsRoute: NewsRouteWithChildren,
   OfficesRoute: OfficesRoute,
@@ -553,6 +594,7 @@ const rootRouteChildren: RootRouteChildren = {
   AcademyInstructorRoute: AcademyInstructorRoute,
   AcademyMyRoute: AcademyMyRoute,
   AcademyVerifyRoute: AcademyVerifyRoute,
+  AdminMembershipRoute: AdminMembershipRoute,
   MeetingsMeetingIdRoute: MeetingsMeetingIdRoute,
   AcademyIndexRoute: AcademyIndexRoute,
   MeetingsIndexRoute: MeetingsIndexRoute,
