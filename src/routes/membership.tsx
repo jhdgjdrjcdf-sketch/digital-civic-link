@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import MembershipForm from "@/components/membership/MembershipForm";
+import MembershipForm from "@/components/MembershipForm";
 
 export const Route = createFileRoute("/membership")({
+  staticData: { sitemap: true },
   component: MembershipPage,
 });
 

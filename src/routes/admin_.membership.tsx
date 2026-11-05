@@ -17,7 +17,8 @@ type MembershipRequest = {
   created_at: string;
 };
 
-export const Route = createFileRoute("/admin/membership")({
+export const Route = createFileRoute("/admin_/membership")({
+  staticData: { sitemap: false },
   component: MembershipAdmin,
 });
 
@@ -31,7 +32,7 @@ function MembershipAdmin() {
     setLoading(true);
     setError("");
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from("membership_requests")
       .select("*")
       .order("created_at", { ascending: false });
@@ -60,7 +61,7 @@ function MembershipAdmin() {
       return;
     }
 
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from("membership_requests")
       .update({
         status,

@@ -90,7 +90,7 @@ export default function MembershipForm() {
 
       uploadedPath = uploaded.path;
 
-      const { error: insertError } = await supabase
+      const { error: insertError } = await (supabase as any)
         .from("membership_requests")
         .insert({
           applicant_id: userId,
