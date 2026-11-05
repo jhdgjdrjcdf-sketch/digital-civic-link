@@ -28,7 +28,7 @@ import { Route as AcademyCourseIdRouteImport } from './routes/academy.$courseId'
 import { Route as AcademyInstructorRouteImport } from './routes/academy.instructor'
 import { Route as AcademyMyRouteImport } from './routes/academy.my'
 import { Route as AcademyVerifyRouteImport } from './routes/academy.verify'
-import { Route as AdminMembershipRouteImport } from './routes/admin/membership'
+import { Route as AdminMembershipRouteImport } from './routes/admin_.membership'
 import { Route as EventsEventIdRouteImport } from './routes/events.$eventId'
 import { Route as MeetingsIndexRouteImport } from './routes/meetings.index'
 import { Route as MeetingsMeetingIdRouteImport } from './routes/meetings.$meetingId'
@@ -132,9 +132,9 @@ const AcademyVerifyRoute = AcademyVerifyRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminMembershipRoute = AdminMembershipRouteImport.update({
-  id: '/membership',
-  path: '/membership',
-  getParentRoute: () => AdminRoute,
+  id: '/admin_/membership',
+  path: '/admin/membership',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const EventsEventIdRoute = EventsEventIdRouteImport.update({
   id: '/$eventId',
@@ -171,7 +171,7 @@ const AcademyLearnCourseIdRoute = AcademyLearnCourseIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
-  '/admin': typeof AdminRouteWithChildren
+  '/admin': typeof AdminRoute
   '/assistant': typeof AssistantRoute
   '/auth': typeof AuthRoute
   '/council': typeof CouncilRoute
@@ -199,7 +199,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
-  '/admin': typeof AdminRouteWithChildren
+  '/admin': typeof AdminRoute
   '/assistant': typeof AssistantRoute
   '/auth': typeof AuthRoute
   '/council': typeof CouncilRoute
@@ -228,7 +228,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
-  '/admin': typeof AdminRouteWithChildren
+  '/admin': typeof AdminRoute
   '/assistant': typeof AssistantRoute
   '/auth': typeof AuthRoute
   '/council': typeof CouncilRoute
@@ -244,7 +244,7 @@ export interface FileRoutesById {
   '/academy/instructor': typeof AcademyInstructorRoute
   '/academy/my': typeof AcademyMyRoute
   '/academy/verify': typeof AcademyVerifyRoute
-  '/admin/membership': typeof AdminMembershipRoute
+  '/admin_/membership': typeof AdminMembershipRoute
   '/events/$eventId': typeof EventsEventIdRoute
   '/meetings/$meetingId': typeof MeetingsMeetingIdRoute
   '/news/$newsId': typeof NewsNewsIdRoute
@@ -330,7 +330,7 @@ export interface FileRouteTypes {
     | '/academy/instructor'
     | '/academy/my'
     | '/academy/verify'
-    | '/admin/membership'
+    | '/admin_/membership'
     | '/events/$eventId'
     | '/meetings/$meetingId'
     | '/news/$newsId'
@@ -343,7 +343,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRoute
-  AdminRoute: typeof AdminRouteWithChildren
+  AdminRoute: typeof AdminRoute
   AssistantRoute: typeof AssistantRoute
   AuthRoute: typeof AuthRoute
   CouncilRoute: typeof CouncilRoute
@@ -359,6 +359,7 @@ export interface RootRouteChildren {
   AcademyInstructorRoute: typeof AcademyInstructorRoute
   AcademyMyRoute: typeof AcademyMyRoute
   AcademyVerifyRoute: typeof AcademyVerifyRoute
+  AdminMembershipRoute: typeof AdminMembershipRoute
   MeetingsMeetingIdRoute: typeof MeetingsMeetingIdRoute
   AcademyIndexRoute: typeof AcademyIndexRoute
   MeetingsIndexRoute: typeof MeetingsIndexRoute
@@ -501,12 +502,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AcademyVerifyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/membership': {
-      id: '/admin/membership'
-      path: '/membership'
+    '/admin_/membership': {
+      id: '/admin_/membership'
+      path: '/admin/membership'
       fullPath: '/admin/membership'
       preLoaderRoute: typeof AdminMembershipRouteImport
-      parentRoute: typeof AdminRoute
+      parentRoute: typeof rootRouteImport
     }
     '/events/$eventId': {
       id: '/events/$eventId'
@@ -553,16 +554,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AdminRouteChildren {
-  AdminMembershipRoute: typeof AdminMembershipRoute
-}
-
-const AdminRouteChildren: AdminRouteChildren = {
-  AdminMembershipRoute: AdminMembershipRoute,
-}
-
-const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
-
 interface EventsRouteChildren {
   EventsEventIdRoute: typeof EventsEventIdRoute
 }
@@ -587,7 +578,7 @@ const NewsRouteWithChildren = NewsRoute._addFileChildren(NewsRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
-  AdminRoute: AdminRouteWithChildren,
+  AdminRoute: AdminRoute,
   AssistantRoute: AssistantRoute,
   AuthRoute: AuthRoute,
   CouncilRoute: CouncilRoute,
@@ -603,6 +594,7 @@ const rootRouteChildren: RootRouteChildren = {
   AcademyInstructorRoute: AcademyInstructorRoute,
   AcademyMyRoute: AcademyMyRoute,
   AcademyVerifyRoute: AcademyVerifyRoute,
+  AdminMembershipRoute: AdminMembershipRoute,
   MeetingsMeetingIdRoute: MeetingsMeetingIdRoute,
   AcademyIndexRoute: AcademyIndexRoute,
   MeetingsIndexRoute: MeetingsIndexRoute,
