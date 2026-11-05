@@ -112,7 +112,7 @@ export function AppShell({
   const online = useOnlineStatus();
 
   return (
-    <div className={cn("min-h-screen w-full bg-background", themeClassName)}>
+    <<div className={cn("min-h-screen bg-[#0B1F3A]", themeClassName)}>
       <div
         className={cn(
           "flex min-h-screen w-full flex-col bg-background",
