@@ -131,12 +131,17 @@
     border-color: var(--color-border);
   }
 
-  body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
-    font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
-  }
+  html,
+body {
+  min-height: 100%;
+  background-color: #0B1F3A;
+}
+
+body {
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
 }
 
 @utility surface-navy {
