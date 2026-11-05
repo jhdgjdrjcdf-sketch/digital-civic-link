@@ -16,8 +16,6 @@ import {
 } from "lucide-react";
 
 import heroImage from "@/assets/hero-new.jpg";
-import "@/Styles.css";
-import "@/styles/home-glass.css";
 
 import { AppShell } from "@/components/AppShell";
 import {
@@ -496,4 +494,4 @@ function HomePage() {
       </main>
     </AppShell>
   );
-}
+} 
