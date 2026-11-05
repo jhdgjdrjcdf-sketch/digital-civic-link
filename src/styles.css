@@ -450,7 +450,8 @@
 .home-hero-image {
   z-index: -3;
   object-fit: cover;
-  object-position: center 45%;
+  /* Keep the portrait in view and push the photo's own printed text away from the headline */
+  object-position: 12% 45%;
   animation: home-image-reveal 1.1s ease both;
 }
 
@@ -459,9 +460,9 @@
   background:
     linear-gradient(
       90deg,
-      rgba(5, 25, 18, 0.2),
-      rgba(5, 25, 18, 0.45) 45%,
-      rgba(5, 25, 18, 0.91)
+      rgba(5, 25, 18, 0.15),
+      rgba(5, 25, 18, 0.7) 40%,
+      rgba(5, 25, 18, 0.96) 70%
     ),
     linear-gradient(
       0deg,
@@ -1103,6 +1104,12 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  /* Avoid a lone card leaving an empty gap on the last row */
+  .home-links-grid > .home-quick-card:last-child:nth-child(3n + 1) {
+    grid-column: 1 / -1;
+    min-height: 0;
+  }
+
   .home-news-layout {
     grid-template-columns: 1fr;
   }
@@ -1177,6 +1184,16 @@
   .home-links-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
+  }
+
+  .home-links-grid > .home-quick-card:last-child:nth-child(3n + 1) {
+    grid-column: auto;
+    min-height: 140px;
+  }
+
+  .home-links-grid > .home-quick-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    min-height: 0;
   }
 
   .home-quick-card {
