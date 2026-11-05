@@ -50,6 +50,8 @@ export const Route = createFileRoute("/")({
         content:
           "One trusted channel for party news, events, consultations and transparency.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: HomePage,
@@ -199,7 +201,7 @@ function HomePage() {
 
   return (
     <AppShell>
-      <main className="home-glass" dir="rtl">
+      <div className="home-glass" dir="rtl">
         <section className="home-hero">
           <img
             src={heroImage}
@@ -491,7 +493,7 @@ function HomePage() {
           <span>تجمع الفاو زاخو</span>
           <span>المنصة الرقمية الرسمية</span>
         </footer>
-      </main>
+      </div>
     </AppShell>
   );
 } 
