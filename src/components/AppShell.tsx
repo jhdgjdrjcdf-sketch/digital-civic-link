@@ -228,7 +228,7 @@ export function AppShell({
                       className={cn("size-5", active && "text-accent")}
                     />
 
-                    <span className="text-arabic leading-none font-semibold">
+                    <span className="text-arabic block max-w-full truncate leading-tight font-semibold">
                       {tab.label}
                     </span>
                   </Link>
