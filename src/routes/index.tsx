@@ -200,7 +200,7 @@ function HomePage() {
   const openPoll = polls.data?.[0];
 
   return (
-    <AppShell>
+    <AppShell flush>
       <div className="home-glass" dir="rtl">
         <section className="home-hero">
           <img
