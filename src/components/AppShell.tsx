@@ -93,6 +93,7 @@ export function AppShell({
   subtitle,
   themeClassName,
   wide,
+  flush,
 }: {
   children: ReactNode;
   title?: string;
@@ -102,6 +103,8 @@ export function AppShell({
   themeClassName?: string;
   /** Allow a wider desktop layout (used by split map views). */
   wide?: boolean;
+  /** Remove the main content padding so a page can render edge-to-edge. */
+  flush?: boolean;
 }) {
   const pathname = useRouterState({
     select: (s) => s.location.pathname,
@@ -191,7 +194,12 @@ export function AppShell({
           </div>
         ) : null}
 
-        <main className="min-w-0 w-full flex-1 px-5 pt-5 pb-28">
+        <main
+          className={cn(
+            "min-w-0 w-full flex-1 pb-[calc(7rem+env(safe-area-inset-bottom))]",
+            flush ? "px-0 pt-0" : "px-5 pt-5",
+          )}
+        >
           {children}
         </main>
 
