@@ -17,10 +17,46 @@ import {
   WifiOff,
   Video,
 } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 import { useRoles, useSession } from "@/lib/auth";
+
+let sectionAudio: AudioContext | undefined;
+
+function playSectionClick(event: MouseEvent<HTMLDivElement>) {
+  if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+  if (!(event.target instanceof Element)) return;
+  const link = event.target.closest("a[href]");
+  if (!(link instanceof HTMLAnchorElement)) return;
+  const url = new URL(link.href);
+  if (url.origin !== window.location.origin || url.hash) return;
+
+  try {
+    // Create audio only inside a user gesture; never autoplay on page load.
+    sectionAudio ??= new AudioContext();
+    const context = sectionAudio;
+    if (context.state === "suspended") void context.resume().catch(() => {});
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    const now = context.currentTime;
+    oscillator.type = "triangle";
+    oscillator.frequency.setValueAtTime(900, now);
+    oscillator.frequency.exponentialRampToValueAtTime(420, now + 0.035);
+    gain.gain.setValueAtTime(0.045, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+    oscillator.connect(gain);
+    gain.connect(context.destination);
+    oscillator.onended = () => {
+      oscillator.disconnect();
+      gain.disconnect();
+    };
+    oscillator.start(now);
+    oscillator.stop(now + 0.045);
+  } catch {
+    // Unsupported or blocked audio must never prevent navigation.
+  }
+}
 
 const TABS = [
   { to: "/", label: "الرئيسية", sub: "Home", icon: Home },
@@ -115,7 +151,10 @@ export function AppShell({
   const online = useOnlineStatus();
 
   return (
-    <div className={cn("min-h-screen bg-background", themeClassName)}>
+    <div
+      className={cn("min-h-screen bg-background", themeClassName)}
+      onClickCapture={playSectionClick}
+    >
       <div
         className={cn(
           "flex min-h-screen w-full flex-col bg-background",
