@@ -235,4 +235,4 @@ Deno.serve(async (request) => {
     console.error("Unexpected exam submission error:", error);
     return jsonResponse({ error: "Unexpected exam submission error." }, 500);
   }
-});
+}); 
