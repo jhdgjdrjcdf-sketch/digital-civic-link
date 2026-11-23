@@ -1,0 +1,49 @@
+cmake_minimum_required(VERSION 3.20)
+project(dcl_exam_engine LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+include(FetchContent)
+include(CTest)
+
+set(HTTPLIB_INSTALL OFF CACHE BOOL "" FORCE)
+set(HTTPLIB_COMPILE OFF CACHE BOOL "" FORCE)
+
+FetchContent_Declare(
+  cpp_httplib
+  GIT_REPOSITORY https://github.com/yhirose/cpp-httplib.git
+  GIT_TAG v0.18.3
+  GIT_SHALLOW TRUE
+)
+
+FetchContent_Declare(
+  nlohmann_json
+  GIT_REPOSITORY https://github.com/nlohmann/json.git
+  GIT_TAG v3.12.0
+  GIT_SHALLOW TRUE
+)
+
+FetchContent_MakeAvailable(cpp_httplib nlohmann_json)
+
+add_executable(dcl-exam-engine src/main.cpp)
+target_include_directories(dcl-exam-engine PRIVATE include)
+target_link_libraries(
+  dcl-exam-engine
+  PRIVATE
+    httplib::httplib
+    nlohmann_json::nlohmann_json
+)
+
+if(BUILD_TESTING)
+  add_executable(dcl-exam-engine-tests tests/grade_tests.cpp)
+  target_include_directories(dcl-exam-engine-tests PRIVATE include)
+  add_test(NAME dcl-exam-engine-tests COMMAND dcl-exam-engine-tests)
+endif()
+
+if(MSVC)
+  target_compile_options(dcl-exam-engine PRIVATE /W4 /WX)
+else()
+  target_compile_options(dcl-exam-engine PRIVATE -Wall -Wextra -Wpedantic)
+endif()
