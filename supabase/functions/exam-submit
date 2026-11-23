@@ -1,0 +1,238 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, apikey, x-client-info, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Vary": "Origin",
+};
+
+type QuestionRow = {
+  id: string;
+  quiz_choices: Array<{ id: string; is_correct: boolean }> | null;
+};
+
+function jsonResponse(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" },
+  });
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+Deno.serve(async (request) => {
+  if (request.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  if (request.method !== "POST") {
+    return jsonResponse({ error: "Method not allowed" }, 405);
+  }
+
+  try {
+    const authorization = request.headers.get("Authorization");
+    if (!authorization?.startsWith("Bearer ")) {
+      return jsonResponse({ error: "Please sign in before submitting an exam." }, 401);
+    }
+
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    const engineUrl = Deno.env.get("DCL_EXAM_ENGINE_URL");
+    const engineSecret = Deno.env.get("DCL_EXAM_ENGINE_SECRET");
+
+    if (!supabaseUrl || !anonKey || !serviceRoleKey || !engineUrl || !engineSecret) {
+      console.error("Exam Engine configuration is incomplete.");
+      return jsonResponse({ error: "The exam service is not configured yet." }, 503);
+    }
+
+    const rawBody = await request.text();
+    if (new TextEncoder().encode(rawBody).byteLength > 32_768) {
+      return jsonResponse({ error: "The submission is too large." }, 413);
+    }
+
+    let payload: unknown;
+    try {
+      payload = JSON.parse(rawBody);
+    } catch {
+      return jsonResponse({ error: "Invalid JSON request." }, 400);
+    }
+
+    if (!isRecord(payload)) {
+      return jsonResponse({ error: "Invalid exam submission." }, 400);
+    }
+
+    const quizId = payload.quiz_id;
+    const submissionKey = payload.submission_key;
+    const answers = payload.answers;
+    const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+    if (typeof quizId !== "string" || !uuidPattern.test(quizId) ||
+        typeof submissionKey !== "string" || !uuidPattern.test(submissionKey) ||
+        !isRecord(answers)) {
+      return jsonResponse({ error: "The exam ID, submission ID, or answers are invalid." }, 400);
+    }
+
+    const userClient = createClient(supabaseUrl, anonKey, {
+      global: { headers: { Authorization: authorization } },
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+
+    const { data: userData, error: authError } = await userClient.auth.getUser();
+    if (authError || !userData.user) {
+      return jsonResponse({ error: "Your session is invalid. Please sign in again." }, 401);
+    }
+
+    const admin = createClient(supabaseUrl, serviceRoleKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+
+    const { data: quiz, error: quizError } = await admin
+      .from("quizzes")
+      .select("id, course_id, pass_percent, max_attempts")
+      .eq("id", quizId)
+      .maybeSingle();
+
+    if (quizError) {
+      console.error("Could not load exam metadata:", quizError.message);
+      return jsonResponse({ error: "Could not load this exam." }, 500);
+    }
+    if (!quiz) {
+      return jsonResponse({ error: "This exam is not available." }, 404);
+    }
+
+    const { data: course, error: courseError } = await admin
+      .from("courses")
+      .select("status")
+      .eq("id", quiz.course_id)
+      .maybeSingle();
+
+    if (courseError) {
+      console.error("Could not verify course status:", courseError.message);
+      return jsonResponse({ error: "Could not verify this course." }, 500);
+    }
+    if (!course || course.status !== "published") {
+      return jsonResponse({ error: "This exam is not currently available." }, 404);
+    }
+
+    const { data: enrollment, error: enrollmentError } = await admin
+      .from("course_enrollments")
+      .select("id")
+      .eq("user_id", userData.user.id)
+      .eq("course_id", quiz.course_id)
+      .maybeSingle();
+
+    if (enrollmentError) {
+      console.error("Could not verify enrollment:", enrollmentError.message);
+      return jsonResponse({ error: "Could not verify course enrollment." }, 500);
+    }
+    if (!enrollment) {
+      return jsonResponse({ error: "Enroll in this course before taking the exam." }, 403);
+    }
+
+    const { data: rows, error: questionError } = await admin
+      .from("quiz_questions")
+      .select("id, quiz_choices(id, is_correct)")
+      .eq("quiz_id", quizId)
+      .order("position");
+
+    if (questionError) {
+      console.error("Could not load exam questions:", questionError.message);
+      return jsonResponse({ error: "Could not load the exam questions." }, 500);
+    }
+
+    const questionRows = (rows ?? []) as QuestionRow[];
+    if (questionRows.length === 0) {
+      return jsonResponse({ error: "This exam does not contain any questions yet." }, 409);
+    }
+
+    const questionIds = new Set(questionRows.map((question) => question.id));
+    const engineQuestions = questionRows.map((question) => {
+      const choices = question.quiz_choices ?? [];
+      const correctChoiceIds = choices.filter((choice) => choice.is_correct).map((choice) => choice.id);
+      return { id: question.id, correct_choice_ids: correctChoiceIds, choice_ids: choices.map((choice) => choice.id) };
+    });
+
+    for (const [questionId, choiceId] of Object.entries(answers)) {
+      if (!questionIds.has(questionId) || typeof choiceId !== "string") {
+        return jsonResponse({ error: "An answer references an invalid question." }, 400);
+      }
+      const question = engineQuestions.find((item) => item.id === questionId);
+      if (!question || !question.choice_ids.includes(choiceId)) {
+        return jsonResponse({ error: "An answer references an invalid choice." }, 400);
+      }
+    }
+
+    if (engineQuestions.some((question) => question.correct_choice_ids.length === 0)) {
+      console.error("An exam question has no correct choice:", quizId);
+      return jsonResponse({ error: "This exam needs to be reviewed by an instructor." }, 409);
+    }
+
+    let engineResponse: Response;
+    try {
+      engineResponse = await fetch(`${engineUrl.replace(/\/+$/, "")}/v1/grade`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Engine-Secret": engineSecret,
+        },
+        body: JSON.stringify({
+          pass_percent: quiz.pass_percent,
+          questions: engineQuestions.map(({ id, correct_choice_ids }) => ({ id, correct_choice_ids })),
+          answers,
+        }),
+        signal: AbortSignal.timeout(8_000),
+      });
+    } catch {
+      return jsonResponse({ error: "The C++ grading service is temporarily unavailable. Your attempt was not recorded." }, 503);
+    }
+
+    const grade = await engineResponse.json().catch(() => null) as
+      | { score?: number; correct_count?: number; total?: number; passed?: boolean }
+      | null;
+
+    if (!engineResponse.ok || !grade ||
+        !Number.isInteger(grade.score) ||
+        !Number.isInteger(grade.correct_count) ||
+        !Number.isInteger(grade.total) ||
+        grade.total !== questionRows.length ||
+        grade.score! < 0 || grade.score! > 100) {
+      console.error("The C++ grading service returned an invalid response.");
+      return jsonResponse({ error: "The grading service returned an invalid result. Your attempt was not recorded." }, 503);
+    }
+
+    const { data: stored, error: storeError } = await admin.rpc(
+      "record_quiz_attempt_from_engine",
+      {
+        _user_id: userData.user.id,
+        _quiz_id: quizId,
+        _score: grade.score!,
+        _submission_key: submissionKey,
+      },
+    );
+
+    if (storeError) {
+      const message = storeError.message.toLowerCase();
+      if (message.includes("used all attempts")) {
+        return jsonResponse({ error: "You have used all attempts for this exam." }, 409);
+      }
+      if (message.includes("enroll")) {
+        return jsonResponse({ error: "Enroll in this course before taking the exam." }, 403);
+      }
+      console.error("Could not record exam attempt:", storeError.message);
+      return jsonResponse({ error: "The result could not be saved. Please retry the same submission." }, 500);
+    }
+
+    return jsonResponse({
+      ...(isRecord(stored) ? stored : {}),
+      correct_count: grade.correct_count,
+      total: grade.total,
+    });
+  } catch (error) {
+    console.error("Unexpected exam submission error:", error);
+    return jsonResponse({ error: "Unexpected exam submission error." }, 500);
+  }
+});
