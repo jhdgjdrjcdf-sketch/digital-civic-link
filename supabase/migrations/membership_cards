@@ -1,0 +1,348 @@
+
+-- ============================================
+-- DIGITAL MEMBERSHIP CARD SYSTEM
+-- Digital Civic Link
+-- ============================================
+
+-- 1. Unique membership number sequence
+
+CREATE SEQUENCE IF NOT EXISTS
+public.membership_card_number_seq
+AS BIGINT
+START WITH 1
+INCREMENT BY 1
+CACHE 1;
+
+
+-- 2. Membership cards table
+
+CREATE TABLE IF NOT EXISTS public.membership_cards (
+
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    membership_request_id UUID NOT NULL UNIQUE
+        REFERENCES public.membership_requests(id)
+        ON DELETE CASCADE,
+
+    applicant_id UUID NOT NULL
+        REFERENCES auth.users(id)
+        ON DELETE CASCADE,
+
+    member_name TEXT NOT NULL,
+
+    membership_number TEXT NOT NULL UNIQUE,
+
+    verification_token TEXT NOT NULL UNIQUE
+        DEFAULT (
+            replace(gen_random_uuid()::text, '-', '') ||
+            replace(gen_random_uuid()::text, '-', '')
+        ),
+
+    status TEXT NOT NULL DEFAULT 'active'
+        CHECK (status IN ('active', 'revoked')),
+
+    issued_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    expires_at TIMESTAMPTZ,
+
+    revoked_at TIMESTAMPTZ,
+
+    issued_by UUID REFERENCES auth.users(id),
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    CONSTRAINT valid_membership_number
+        CHECK (
+            membership_number ~ '^DCL-[0-9]{4}-[0-9]{6,}$'
+        ),
+
+    CONSTRAINT valid_expiry
+        CHECK (
+            expires_at IS NULL OR expires_at > issued_at
+        ),
+
+    CONSTRAINT valid_revocation_state
+        CHECK (
+            (status = 'revoked' AND revoked_at IS NOT NULL)
+            OR
+            (status = 'active' AND revoked_at IS NULL)
+        )
+);
+
+
+-- 3. Performance indexes
+
+CREATE INDEX IF NOT EXISTS
+membership_cards_applicant_idx
+ON public.membership_cards(
+    applicant_id,
+    issued_at DESC
+);
+
+CREATE INDEX IF NOT EXISTS
+membership_cards_status_idx
+ON public.membership_cards(
+    status,
+    issued_at DESC
+);
+
+
+-- 4. Enable Row Level Security
+
+ALTER TABLE public.membership_cards
+ENABLE ROW LEVEL SECURITY;
+
+
+-- 5. Database permissions
+
+REVOKE ALL ON TABLE public.membership_cards
+FROM anon, authenticated;
+
+GRANT SELECT ON TABLE public.membership_cards
+TO authenticated;
+
+GRANT UPDATE (status, revoked_at)
+ON TABLE public.membership_cards
+TO authenticated;
+
+
+-- 6. Members can read their own cards.
+-- Admins can read cards through the existing helper.
+
+DROP POLICY IF EXISTS
+"Applicants read own membership cards"
+ON public.membership_cards;
+
+CREATE POLICY "Applicants read own membership cards"
+ON public.membership_cards
+FOR SELECT
+TO authenticated
+USING (
+    applicant_id = (SELECT auth.uid())
+    OR public.is_membership_admin()
+);
+
+
+-- 7. Admin-only card updates
+
+DROP POLICY IF EXISTS
+"Membership admins revoke cards"
+ON public.membership_cards;
+
+CREATE POLICY "Membership admins revoke cards"
+ON public.membership_cards
+FOR UPDATE
+TO authenticated
+USING (
+    public.is_membership_admin()
+)
+WITH CHECK (
+    public.is_membership_admin()
+);
+
+
+-- 8. Automatic card issuance after approval
+
+CREATE OR REPLACE FUNCTION
+public.issue_membership_card_on_approval()
+
+RETURNS TRIGGER
+
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+
+AS $$
+
+DECLARE
+    next_number BIGINT;
+
+BEGIN
+
+    IF NEW.status <> 'approved' THEN
+        RETURN NEW;
+    END IF;
+
+    IF TG_OP = 'UPDATE'
+       AND OLD.status = 'approved' THEN
+        RETURN NEW;
+    END IF;
+
+    next_number := nextval(
+        'public.membership_card_number_seq'::regclass
+    );
+
+    INSERT INTO public.membership_cards (
+
+        membership_request_id,
+        applicant_id,
+        member_name,
+        membership_number,
+        issued_by
+
+    )
+
+    VALUES (
+
+        NEW.id,
+        NEW.applicant_id,
+        NEW.full_name,
+
+        'DCL-' ||
+        to_char(NOW() AT TIME ZONE 'UTC', 'YYYY') ||
+        '-' ||
+        lpad(next_number::text, 6, '0'),
+
+        NEW.reviewed_by
+
+    )
+
+    ON CONFLICT (membership_request_id)
+    DO NOTHING;
+
+    RETURN NEW;
+
+END;
+
+$$;
+
+
+REVOKE ALL ON FUNCTION
+public.issue_membership_card_on_approval()
+FROM public, anon, authenticated;
+
+
+-- 9. Attach trigger to membership requests
+
+DROP TRIGGER IF EXISTS
+issue_membership_card_after_approval
+ON public.membership_requests;
+
+CREATE TRIGGER
+issue_membership_card_after_approval
+
+AFTER INSERT OR UPDATE OF status
+
+ON public.membership_requests
+
+FOR EACH ROW
+
+EXECUTE FUNCTION
+public.issue_membership_card_on_approval();
+
+
+-- 10. Public card verification function
+
+CREATE OR REPLACE FUNCTION
+public.verify_membership_card(p_token TEXT)
+
+RETURNS TABLE (
+
+    membership_number TEXT,
+    status TEXT,
+    issued_at TIMESTAMPTZ,
+    expires_at TIMESTAMPTZ,
+    is_valid BOOLEAN
+
+)
+
+LANGUAGE SQL
+STABLE
+SECURITY DEFINER
+SET search_path = ''
+
+AS $$
+
+    SELECT
+
+        card.membership_number,
+
+        CASE
+            WHEN card.status = 'revoked'
+                THEN 'revoked'
+
+            WHEN card.expires_at IS NOT NULL
+                 AND card.expires_at <= NOW()
+                THEN 'expired'
+
+            ELSE 'active'
+        END,
+
+        card.issued_at,
+
+        card.expires_at,
+
+        (
+            card.status = 'active'
+            AND (
+                card.expires_at IS NULL
+                OR card.expires_at > NOW()
+            )
+        )
+
+    FROM public.membership_cards AS card
+
+    WHERE
+        p_token ~ '^[a-f0-9]{64}$'
+        AND card.verification_token = p_token
+
+    LIMIT 1;
+
+$$;
+
+
+REVOKE ALL ON FUNCTION
+public.verify_membership_card(TEXT)
+FROM public, anon, authenticated;
+
+GRANT EXECUTE ON FUNCTION
+public.verify_membership_card(TEXT)
+TO anon, authenticated;
+
+
+-- 11. Admin card revocation
+
+CREATE OR REPLACE FUNCTION
+public.revoke_membership_card(p_card_id UUID)
+
+RETURNS BOOLEAN
+
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+
+AS $$
+
+BEGIN
+
+    IF NOT public.is_membership_admin() THEN
+
+        RAISE EXCEPTION 'Not authorized'
+        USING ERRCODE = '42501';
+
+    END IF;
+
+    UPDATE public.membership_cards
+
+    SET
+        status = 'revoked',
+        revoked_at = NOW()
+
+    WHERE
+        id = p_card_id
+        AND status = 'active';
+
+    RETURN FOUND;
+
+END;
+
+$$;
+
+
+REVOKE ALL ON FUNCTION
+public.revoke_membership_card(UUID)
+FROM public, anon, authenticated;
+
+GRANT EXECUTE ON FUNCTION
+public.revoke_membership_card(UUID)
+TO authenticated;
