@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 
@@ -86,13 +87,11 @@ export default function DigitalMembershipCard({
       className="mx-auto w-full max-w-md overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl"
       aria-label="بطاقة العضوية الرقمية"
     >
-      {/* Card Header */}
       <div className="relative overflow-hidden bg-[#0B1F3A] px-6 py-7 text-white">
         <div
           className="pointer-events-none absolute -left-12 -top-16 h-48 w-48 rounded-full border border-white/10"
           aria-hidden="true"
         />
-
         <div
           className="pointer-events-none absolute -bottom-20 -right-10 h-52 w-52 rounded-full border border-white/10"
           aria-hidden="true"
@@ -121,7 +120,6 @@ export default function DigitalMembershipCard({
         </div>
       </div>
 
-      {/* Membership Information */}
       <div className="space-y-5 p-6">
         <div className="rounded-2xl bg-slate-50 p-4">
           <p className="text-xs font-medium text-slate-500">
@@ -163,7 +161,6 @@ export default function DigitalMembershipCard({
           </div>
         </div>
 
-        {/* QR Verification */}
         <div className="flex flex-col items-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5">
           <h4 className="font-bold text-[#0B1F3A]">
             التحقق من العضوية
