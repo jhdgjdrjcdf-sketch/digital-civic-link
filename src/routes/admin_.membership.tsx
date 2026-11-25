@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-
+import MembershipCardsAdmin from "@/components/MembershipCardsAdmin";
 type MembershipRequest = {
   id: string;
   applicant_id: string;
